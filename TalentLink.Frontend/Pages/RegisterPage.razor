@@ -1,0 +1,41 @@
+﻿@page "/register"
+
+
+@using TalentLink.Frontend.Models
+@inject HttpClient HttpClient
+
+<h3>RegisterPage</h3>
+<form>
+    <div class="form-group mb-3">
+        <InputSelect @bind-Value="user.Role" class="form-control">
+            <option value="">Choose your role</option>
+            <option value="0">Student</option>
+            <option value="1">Senior</option>
+            <option value="2">Parent</option>
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" @bind="@user.Name" class="form-control" required />
+    </div>
+  
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" @bind="@user.Email" class="form-control" required />
+    </div>
+    <div class="form-group mb-3">
+        <label for="password">Password</label>
+        <input type="password" id="password" @bind="@user.Password" class="form-control" required />
+    </div>
+    <button type="button" @onclick="@Register" class="btn btn-primary">Register</button>
+
+</form>
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="mt-3 alert alert-info">@message</div>
+}
+
+@code {
+  
+
+}
