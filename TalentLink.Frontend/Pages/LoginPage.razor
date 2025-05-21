@@ -1,7 +1,31 @@
 ﻿@page "/login"
+@using TalentLink.Frontend.Models
+@inject HttpClient HttpClient
+@inject NavigationManager Navi
 
-<h3>LoginPage</h3>
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-title">Login</div>
+        <form @onsubmit="LoginUser">
+            <div class="form-row">
+                <label for="email">EMail</label>
+                <input id="email" class="input-group-sm" @bind="login.Email" type="email" required />
+            </div>
+            <div class="form-row">
+                <label for="password">Password</label>
+                <input id="password" class="input-group-sm" @bind="login.Password" type="password" required />
+            </div>
+            <button class="btn btn-outline-primary" type="submit">Login</button>
+        </form>
+    </div>
+</div>
 
 @code {
+    private LoginDto login = new LoginDto();
 
+    private void LoginUser()
+    {
+        // TODO: Implement the login logic here
+    }
 }
