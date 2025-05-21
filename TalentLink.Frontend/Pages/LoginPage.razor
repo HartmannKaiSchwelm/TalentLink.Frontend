@@ -1,7 +1,9 @@
 ﻿@page "/login"
 @using TalentLink.Frontend.Models
+
 @inject HttpClient HttpClient
 @inject NavigationManager Navi
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
 
 
 <div class="register-container">
@@ -18,14 +20,33 @@
             </div>
             <button class="btn btn-outline-primary" type="submit">Login</button>
         </form>
+        <!-- Failed Message-->
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="register-message">@message</div>
+        }
     </div>
 </div>
 
 @code {
     private LoginDto login = new LoginDto();
+    private string? message;
 
-    private void LoginUser()
+    private async Task LoginUser()
     {
-        // TODO: Implement the login logic here
+        var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/auth/login", login);
+        if (response.IsSuccessStatusCode)
+        {
+            var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
+            if (auth is not null)
+            {
+                AuthService.SetAuth(auth.Token, auth.Name);
+            }
+            Navi.NavigateTo("/profile");
+        }
+        else
+        {
+            message = "Login failed."; 
+        }
     }
 }
