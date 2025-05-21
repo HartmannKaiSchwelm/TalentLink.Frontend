@@ -14,7 +14,7 @@
 
         public async Task LogoutAsync()
         {
-            await AuthService.LogoutAsync();
+            
             Navi.NavigateTo("/");
         }
         public void Dispose()
