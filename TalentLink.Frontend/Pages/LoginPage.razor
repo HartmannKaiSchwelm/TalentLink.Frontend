@@ -6,47 +6,27 @@
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
 
 
-<div class="register-container">
-    <div class="register-card">
-        <div class="register-title">Login</div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
+        <h4 class="mb-4 text-center">Login</h4>
         <form @onsubmit="LoginUser">
-            <div class="form-row">
-                <label for="email">EMail</label>
-                <input id="email" class="input-group-sm" @bind="login.Email" type="email" required />
+            <div class="mb-3">
+                <label for="email" class="form-label">E-Mail</label>
+                <input id="email" class="form-control" @bind="login.Email" type="email" required />
             </div>
-            <div class="form-row">
-                <label for="password">Password</label>
-                <input id="password" class="input-group-sm" @bind="login.Password" type="password" required />
+            <div class="mb-3">
+                <label for="password" class="form-label">Passwort</label>
+                <input id="password" class="form-control" @bind="login.Password" type="password" required />
             </div>
-            <button class="btn btn-outline-primary" type="submit">Login</button>
+            <button class="btn btn-primary w-100" type="submit">Login</button>
         </form>
-        <!-- Failed Message-->
         @if (!string.IsNullOrEmpty(message))
         {
-            <div class="register-message">@message</div>
+            <div class="alert alert-danger mt-3">@message</div>
         }
     </div>
 </div>
 
 @code {
-    private LoginDto login = new LoginDto();
-    private string? message;
-
-    private async Task LoginUser()
-    {
-        var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/auth/login", login);
-        if (response.IsSuccessStatusCode)
-        {
-            var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
-            if (auth is not null)
-            {
-                AuthService.SetAuth(auth.Token, auth.Name);
-            }
-            Navi.NavigateTo("/profile");
-        }
-        else
-        {
-            message = "Login failed."; 
-        }
-    }
+  
 }
