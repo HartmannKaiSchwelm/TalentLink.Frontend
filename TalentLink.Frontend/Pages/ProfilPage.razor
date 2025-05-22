@@ -3,9 +3,10 @@
 @using TalentLink.Frontend.Models
 
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
+@inject NavigationManager Navi
 
 
-<!-- AuthService needs to be adjusted, tomorrow -->
+
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
         <h4 class="mb-4 text-center">Profil</h4>
@@ -13,32 +14,33 @@
             <dt class="col-4">Name:</dt>
             <dd class="col-8">@AuthService.UserName</dd>
             <dt class="col-4">E-Mail:</dt>
-            @* <dd class="col-8">@AuthService.Email</dd> *@
+            <dd class="col-8">@AuthService.Email</dd>
             <dt class="col-4">Rolle:</dt>
-            @* <dd class="col-8">@AuthService.Role</dd> *@
+            <dd class="col-8">@AuthService.Role</dd>
         </dl>
         <!-- either a button here or in the header, no decision yet-->
-      @*   @if (AuthService.Role == "Senior")
+        @if (AuthService.Role == "Senior")
         {
-            <button class="btn btn-outline-primary w-100 mt-3">Job anbieten</button>
-        } *@
+            <button class="btn btn-outline-primary w-100 mt-3" @onclick="createJob" >Job anbieten</button>
+            @if (AuthService.CreatedJobs != null && AuthService.CreatedJobs.Any())
+            {
+                @foreach (var Auftrag in AuthService.CreatedJobs)
+                {
+                    @Auftrag.Description
+                    ;
+                }
+            }
+            else
+            {
+                <span>Hier könnten ihre vergebenen Jobs stehen.</span>
+            }
+        }
     </div>
 </div>
+
+
+
 @code {
 
-    // replaced with AuthService
-    // private ProfileDto? profile;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     if (!AuthService.IsAuthenticated || string.IsNullOrEmpty(AuthService.Token))
-    //         return;
-    //     var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Profile/me");
-    //     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
-    //     var response = await HttpClient.SendAsync(request);
-    //     if (response.IsSuccessStatusCode)
-    //     {
-    //         profile = await response.Content.ReadFromJsonAsync<ProfileDto>();
-    //     }
-    // }
 }

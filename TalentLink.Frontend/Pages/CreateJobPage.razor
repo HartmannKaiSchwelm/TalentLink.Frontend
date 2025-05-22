@@ -1,0 +1,72 @@
+﻿@page "/createjob"
+@using TalentLink.Frontend.Models
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+@inject HttpClient HttpClient
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
+        <h4 class="mb-4 text-center">Job anlegen</h4>
+        <EditForm Model="@newJob" OnValidSubmit="CreateJob">
+            <InputText @bind-Value="newJob.Title" class="form-control mb-2" placeholder="Job Title" />
+            <InputTextArea @bind-Value="newJob.Description" class="form-control mb-2" placeholder="Beschreibung" />
+            <button class="btn btn-primary w-100" type="submit">Job speichern</button>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="alert alert-success mt-2">@successMessage</div>
+        }
+    </div>
+</div>
+
+@code {
+    private CreateJobDto newJob = new CreateJobDto();
+    private Job nuJob = new Job();
+    private string? successMessage;
+    private string? errorMessage; 
+
+    private async Task CreateJob()
+    {
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/jobs", newJob);
+            if (response.IsSuccessStatusCode)
+            {
+                var createdJob = await response.Content.ReadFromJsonAsync<Job>();
+                if (createdJob != null)
+                {
+                    if (AuthService.CreatedJobs == null)
+                        AuthService.CreatedJobs = new List<Job>();
+                    AuthService.CreatedJobs.Add(createdJob);
+                }
+                successMessage = "Job erfolgreich angelegt!";
+                errorMessage = null;
+                newJob = new CreateJobDto(); // Formular zurücksetzen
+            }
+            else
+            {
+                errorMessage = "Fehler beim Speichern des Jobs.";
+                successMessage = null;
+            }
+        }
+        catch
+        {
+            errorMessage = "Serverfehler beim Speichern des Jobs.";
+            successMessage = null;
+        }
+        if (AuthService.CreatedJobs == null)
+        {
+            AuthService.CreatedJobs = new List<Job>();
+        }
+
+        AuthService.CreatedJobs.Add(new Job
+        {
+            Title = nuJob.Title,
+            Description = nuJob.Description
+        });
+        
+        
+        nuJob = new Job(); // Formular zurücksetzen
+
+        StateHasChanged();
+    }
+}
