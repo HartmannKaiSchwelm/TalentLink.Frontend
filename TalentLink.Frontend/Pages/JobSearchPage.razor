@@ -1,0 +1,165 @@
+﻿@page "/jobsearch"
+@using TalentLink.Frontend.Models
+@inject HttpClient HttpClient
+
+<h3>Job Search</h3>
+
+<div>
+    <label>Choose a category:</label>
+    <select @onchange="OnCategoryChanged">
+        <option value="">All Categories</option>
+        @if (categories == null || !categories.Any())
+        {
+            <option disabled>No categories available</option>
+        }
+        else
+        {
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        }
+    </select>
+</div>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (jobs == null || !jobs.Any())
+{
+    <p>No jobs found.</p>
+}
+else
+{
+    @foreach (var job in jobs)
+    {
+        <div>
+            <strong>@job.Title</strong> - @job.Category (@job.CreatedAt.ToString("d"))
+        </div>
+    }
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color: red;">Error: @errorMessage</p>
+}
+
+@code {
+    private List<Job> jobs = new();
+    private List<JobCategory> categories = new();
+    private string catUID = string.Empty;
+    private bool isLoading = false;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+        await GetAllJobs();
+    }
+
+    private async Task LoadCategories()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+            var response = await HttpClient.GetAsync("https://localhost:7024/api/Categories");
+            if (response.IsSuccessStatusCode)
+            {
+                categories = await response.Content.ReadFromJsonAsync<List<JobCategory>>() ?? new List<JobCategory>();
+                if (!categories.Any())
+                {
+                    errorMessage = "No categories returned from the API.";
+                }
+            }
+            else
+            {
+                errorMessage = $"Failed to fetch categories: {response.StatusCode} {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error fetching categories: {ex.Message}";
+            categories = new List<JobCategory>();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetAllJobs()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+            var response = await HttpClient.GetAsync("https://localhost:7024/api/Job");
+            if (response.IsSuccessStatusCode)
+            {
+                jobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                if (!jobs.Any())
+                {
+                    errorMessage = "No jobs returned from the API.";
+                }
+            }
+            else
+            {
+                errorMessage = $"Failed to fetch jobs: {response.StatusCode} {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error fetching jobs: {ex.Message}";
+            jobs = new List<Job>();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnCategoryChanged(ChangeEventArgs e)
+    {
+        catUID = e.Value?.ToString() ?? string.Empty;
+        await GetJobsByCat();
+    }
+
+    private async Task GetJobsByCat()
+    {
+        try
+        {
+            isLoading = true;
+            errorMessage = string.Empty;
+            var url = string.IsNullOrEmpty(catUID)
+                ? "https://localhost:7024/api/Job"
+                : $"https://localhost:7024/api/Job?categoryId={catUID}";
+            var response = await HttpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                jobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                if (!jobs.Any())
+                {
+                    errorMessage = "No jobs found for the selected category.";
+                }
+            }
+            else
+            {
+                errorMessage = $"Failed to fetch jobs: {response.StatusCode} {response.ReasonPhrase}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error fetching jobs: {ex.Message}";
+            jobs = new List<Job>();
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

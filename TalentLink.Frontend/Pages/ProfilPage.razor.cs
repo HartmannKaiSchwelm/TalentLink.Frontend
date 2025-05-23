@@ -2,9 +2,5 @@
 {
     public partial class ProfilPage
     {
-        public void createJob()
-        {
-            Navi.NavigateTo("/createjob");
-        }
     }
 }

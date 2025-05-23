@@ -4,7 +4,7 @@
     {
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public JobCategory Category { get; set; }
+        public JobCategory Category { get; set; } = null!;
         public decimal PricePerHour { get; set; }
         public bool IsBoosted { get; set; }
     }

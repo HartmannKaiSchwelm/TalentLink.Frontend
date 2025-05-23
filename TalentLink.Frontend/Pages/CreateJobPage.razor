@@ -9,26 +9,92 @@
         <EditForm Model="@newJob" OnValidSubmit="CreateJob">
             <InputText @bind-Value="newJob.Title" class="form-control mb-2" placeholder="Job Title" />
             <InputTextArea @bind-Value="newJob.Description" class="form-control mb-2" placeholder="Beschreibung" />
+            <InputNumber @bind-Value="newJob.PricePerHour" class="form-control mb-2" placeholder="Preis pro Stunde" />
+            <div class="mb-2">
+                <label>Kategorie</label>
+                <InputSelect @bind-Value="selectedCategoryId" class="form-control">
+                    <option value="">Kategorie wählen...</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </InputSelect>
+            </div>
+            <div class="form-check mb-2">
+                <InputCheckbox @bind-Value="newJob.IsBoosted" class="form-check-input" />
+                <label class="form-check-label">Job hervorheben (Boosted)</label>
+            </div>
             <button class="btn btn-primary w-100" type="submit">Job speichern</button>
         </EditForm>
         @if (!string.IsNullOrEmpty(successMessage))
         {
             <div class="alert alert-success mt-2">@successMessage</div>
         }
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-2">@errorMessage</div>
+        }
     </div>
 </div>
 
 @code {
     private CreateJobDto newJob = new CreateJobDto();
-    private Job nuJob = new Job();
+    private List<JobCategory> categories = new();
+    private Guid? selectedCategoryId;
     private string? successMessage;
-    private string? errorMessage; 
+    private string? errorMessage;
 
-    private async Task CreateJob()
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategoriesAsync();
+    }
+
+    private async Task LoadCategoriesAsync()
     {
         try
         {
-            var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/jobs", newJob);
+            var result = await HttpClient.GetFromJsonAsync<List<JobCategory>>("https://localhost:7024/api/categories");
+            if (result != null)
+                categories = result;
+        }
+        catch
+        {
+            errorMessage = "Kategorien konnten nicht geladen werden.";
+        }
+    }
+
+    private async Task CreateJob()
+    {
+        errorMessage = null;
+        successMessage = null;
+        if (selectedCategoryId == null)
+        {
+            errorMessage = "Bitte wählen Sie eine Kategorie.";
+            return;
+        }
+        var selectedCategory = categories.FirstOrDefault(c => c.Id == selectedCategoryId);
+        if (selectedCategory == null)
+        {
+            errorMessage = "Ungültige Kategorie.";
+            return;
+        }
+        newJob.Category = new JobCategory
+        {
+            Id = selectedCategory.Id,
+            Name = selectedCategory.Name,
+            ImageUrl = selectedCategory.ImageUrl
+        };
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/Job")
+            {
+                Content = JsonContent.Create(newJob)
+            };
+            if (!string.IsNullOrEmpty(AuthService.Token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+            }
+            var response = await HttpClient.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
                 var createdJob = await response.Content.ReadFromJsonAsync<Job>();
@@ -39,34 +105,22 @@
                     AuthService.CreatedJobs.Add(createdJob);
                 }
                 successMessage = "Job erfolgreich angelegt!";
-                errorMessage = null;
-                newJob = new CreateJobDto(); // Formular zurücksetzen
+                newJob = new CreateJobDto();
+                selectedCategoryId = null;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                errorMessage = "Nicht autorisiert. Bitte einloggen.";
             }
             else
             {
                 errorMessage = "Fehler beim Speichern des Jobs.";
-                successMessage = null;
             }
         }
         catch
         {
             errorMessage = "Serverfehler beim Speichern des Jobs.";
-            successMessage = null;
         }
-        if (AuthService.CreatedJobs == null)
-        {
-            AuthService.CreatedJobs = new List<Job>();
-        }
-
-        AuthService.CreatedJobs.Add(new Job
-        {
-            Title = nuJob.Title,
-            Description = nuJob.Description
-        });
-        
-        
-        nuJob = new Job(); // Formular zurücksetzen
-
         StateHasChanged();
     }
 }

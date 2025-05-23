@@ -4,8 +4,7 @@
 
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
 @inject NavigationManager Navi
-
-
+@inject HttpClient HttpClient
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
@@ -18,17 +17,24 @@
             <dt class="col-4">Rolle:</dt>
             <dd class="col-8">@AuthService.Role</dd>
         </dl>
-        <!-- either a button here or in the header, no decision yet-->
         @if (AuthService.Role == "Senior")
         {
-            <button class="btn btn-outline-primary w-100 mt-3" @onclick="createJob" >Job anbieten</button>
-            @if (AuthService.CreatedJobs != null && AuthService.CreatedJobs.Any())
+            <button class="btn btn-outline-primary w-100 mt-3" @onclick="createJob">Job anbieten</button>
+            @if (loadingJobs)
             {
-                @foreach (var Auftrag in AuthService.CreatedJobs)
-                {
-                    @Auftrag.Description
-                    ;
-                }
+                <div>Lade Jobs...</div>
+            }
+            else if (createdJobs != null && createdJobs.Any())
+            {
+                <ul class="list-group mt-3">
+                    @foreach (var job in createdJobs)
+                    {
+                        <li class="list-group-item">
+                            <b>@job.Title</b><br />
+                            <span>@job.Description</span>
+                        </li>
+                    }
+                </ul>
             }
             else
             {
@@ -38,9 +44,39 @@
     </div>
 </div>
 
-
-
 @code {
+    List<Job> createdJobs = new();
+    bool loadingJobs = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCreatedJobsAsync();
+    }
 
+    async Task LoadCreatedJobsAsync()
+    {
+        if (AuthService.Role != "Senior") return;
+        loadingJobs = true;
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Job/created-by-me");
+            if (!string.IsNullOrEmpty(AuthService.Token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+            }
+            var response = await HttpClient.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                var jobs = await response.Content.ReadFromJsonAsync<List<Job>>();
+                if (jobs != null)
+                    createdJobs = jobs;
+            }
+        }
+        finally
+        {
+            loadingJobs = false;
+        }
+    }
+
+    void createJob() => Navi.NavigateTo("/createjob");
 }
