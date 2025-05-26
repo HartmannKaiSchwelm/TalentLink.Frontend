@@ -22,7 +22,14 @@ namespace TalentLink.Frontend.Pages
                 {
                     AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs);
                 }
-                Navi.NavigateTo("/profile");
+                if (AuthService.Role == "Admin")
+                {
+                    Navi.NavigateTo("/admindashboard");
+                }
+                else {
+                    Navi.NavigateTo("/profile");
+                }
+                    
             }
             else
             {

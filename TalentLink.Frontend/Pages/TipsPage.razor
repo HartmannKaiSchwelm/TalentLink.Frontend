@@ -1,0 +1,21 @@
+﻿@page "/tips"
+@inject HttpClient HttpClient
+@using TalentLink.Frontend.Models
+
+<h3>TipsPage</h3>
+
+@if (tips.Any())
+{
+    @foreach (var tip in tips)
+    {
+        <div class="tip-card">
+            <h4>@tip.Title</h4>
+            <p>@tip.Content</p>
+        </div>
+    }
+}
+else
+{
+    <p>Laden...</p>
+}
+

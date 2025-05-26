@@ -1,5 +1,4 @@
-﻿
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 using System.Threading.Tasks;
 using TalentLink.Frontend.Models;
 namespace TalentLink.Frontend.Services
@@ -18,33 +17,38 @@ namespace TalentLink.Frontend.Services
         public string? Email { get; private set; }
         public string Role { get; private set; }
 
-        public ICollection<Job>CreatedJobs { get; set; }
+        public ICollection<Job> CreatedJobs { get; set; }
 
-        public ICollection<Rating> GivenRatings { get; private set;  }
+        public ICollection<Rating> GivenRatings { get; private set; }
 
-        public ICollection<Rating> ReceivedRatings { get; private set;  }
+        public ICollection<Rating> ReceivedRatings { get; private set; }
         public ICollection<JobComment> WrittenComments { get; private set; }
+
+        // NEU: Zeigt an, ob Authentifizierung geladen wurde
+        public bool IsAuthLoaded { get; private set; } = false;
 
         public AuthenticationService(ILocalStorageService localStorage)
         {
             _localStorage = localStorage;
         }
-        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job>createdJobs)
+        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job> createdJobs)
         {
             Token = token;
             UserName = userName;
             Email = email;
             Role = role;
-            CreatedJobs = createdJobs; 
+            CreatedJobs = createdJobs;
 
             IsAuthenticated = true;
-            await _localStorage.SetItemAsync("auth_Token", token);
+            await _localStorage.SetItemAsync("auth_token", token);
             await _localStorage.SetItemAsync("auth_userName", userName);
             await _localStorage.SetItemAsync("auth_role", role);
             await _localStorage.SetItemAsync("auth_email", email);
             await _localStorage.SetItemAsync("auth_createdJobs", createdJobs);
             OnAuthStateChanged?.Invoke();
         }
+        public Task AuthLoadedTask => _authLoadedTcs.Task;
+        private TaskCompletionSource _authLoadedTcs = new();
 
         public async Task TryRestoreAuthAsync()
         {
@@ -54,8 +58,9 @@ namespace TalentLink.Frontend.Services
             Email = await _localStorage.GetItemAsync<string>("auth_email");
             CreatedJobs = await _localStorage.GetItemAsync<ICollection<Job>>("auth_createdJobs");
             IsAuthenticated = !string.IsNullOrEmpty(Token);
-            if (IsAuthenticated)
-                OnAuthStateChanged?.Invoke();
+            IsAuthLoaded = true;
+            _authLoadedTcs.TrySetResult();
+            OnAuthStateChanged?.Invoke();
         }
         // Logout: Auth-Daten löschen
         public async Task LogoutAsync()

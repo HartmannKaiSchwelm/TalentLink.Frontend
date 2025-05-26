@@ -1,7 +1,67 @@
 ﻿@page "/admindashboard"
 
+@inject TalentLink.Frontend.Services.AuthenticationService AuthenticationService
+@inject HttpClient HttpClient
+@using TalentLink.Frontend.Models
+
 <h3>AdminDashboardPage</h3>
 
-@code {
+@if (!AuthenticationService.IsAuthLoaded)
+{
+    <p>Lade Authentifizierung...</p>
+}
+else if (!AuthenticationService.IsAuthenticated || AuthenticationService.Role != "Admin")
+{
+    <p class="text-danger">Nicht autorisiert oder ausgeloggt.</p>
+}
+else if (!string.IsNullOrEmpty(error))
+{
+    <p class="text-danger">@error</p>
+}
+else if (userData == null || userData.Users == null)
+{
+    <p>Lade Daten...</p>
+}
+else
+{
+    <p>Registrierte User: @userData.Users.Count</p>
+    <ul>
+        @foreach (var stat in userData.Users)
+        {
+            <li>@stat.Role: @stat.Count</li>
+        }
+    </ul>
+    <p>Erstellt Tips: @(userData.TotalTips ?? 0)</p>
+}
 
+@code {
+    private AdminDashboardDto? userData;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Warten, bis Auth geladen ist (egal wie lange es dauert)
+        await AuthenticationService.AuthLoadedTask;
+
+        if (!AuthenticationService.IsAuthenticated || AuthenticationService.Role != "Admin")
+        {
+            error = "Nicht autorisiert oder ausgeloggt.";
+            return;
+        }
+
+        try
+        {
+            if (!string.IsNullOrEmpty(AuthenticationService.Token))
+            {
+                HttpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationService.Token);
+            }
+
+            userData = await HttpClient.GetFromJsonAsync<AdminDashboardDto>("https://localhost:7024/api/Admin/dashboard");
+        }
+        catch
+        {
+            error = "Fehler beim Laden der Daten oder nicht autorisiert.";
+        }
+    }
 }
