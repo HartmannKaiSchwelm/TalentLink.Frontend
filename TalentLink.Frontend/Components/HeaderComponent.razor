@@ -21,13 +21,16 @@ else
                     @if (AuthService.Role == "Student")
                     {
                         <li class="nav-item">
-                            <a class="nav-link disabled">Job finden</a>
+                            <a class="nav-link" href="/jobsearch">Job finden</a>
                         </li>
                     }
                     @if (AuthService.Role == "Senior")
                     {
                         <li class="nav-item">
-                            <a class="nav-link disabled">Job anbieten</a>
+                            <a class="nav-link" href="/createjob">Job anbieten</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/jobsearch">Job suchen</a>
                         </li>
                     }
                     <li class="nav-item">

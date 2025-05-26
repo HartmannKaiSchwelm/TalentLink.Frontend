@@ -32,13 +32,29 @@ else if (jobs == null || !jobs.Any())
 }
 else
 {
-    @foreach (var job in jobs)
-    {
-        <div>
-            <strong>@job.Title</strong> - @job.Category (@job.CreatedAt.ToString("d"))
-            <img src="@job.CategoryImage" width="30" height="30" />
+
+    <div class="container py-5">
+        <div class="row g-4">
+        <h1 class="text-center mb-5">Jobs</h1>
+            @foreach (var job in jobs)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card job-card h-100">
+                        <div class="card-img-container">
+                            <img src="@job.CategoryImage" alt="@job.Category">
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="job-title">@job.Title</h5>
+                            <p class="job-category">@job.Category</p>
+                            <p class="job-date mb-3">Erstellt: @job.CreatedAt.ToString("dd.MM.yyyy")</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-    }
+    </div>
+   
 }
 
 @if (!string.IsNullOrEmpty(errorMessage))
