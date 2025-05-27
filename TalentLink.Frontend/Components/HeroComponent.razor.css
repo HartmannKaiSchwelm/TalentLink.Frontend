@@ -1,0 +1,305 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #a2d2df;
+}
+
+/* Unique asymmetric grid layout */
+.container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "nav nav"
+        "hero content"
+        "footer footer";
+}
+
+
+
+/* Hero section with unique typography */
+.hero {
+    grid-area: hero;
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .hero h1 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 300;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+        .hero h1 strong {
+            font-weight: 600;
+            position: relative;
+        }
+
+            /* Subtle underline animation */
+            .hero h1 strong::after {
+                content: '';
+                position: absolute;
+                bottom: -4px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: #1a1a1a;
+                transition: width 1.5s ease-out 0.5s;
+            }
+
+            .hero h1 strong:hover::after {
+                width: 100%;
+            }
+
+    .hero p {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 400px;
+        margin-bottom: 2rem;
+    }
+
+/* Content area with organic layout */
+.content {
+    grid-area: content;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 50%, #a2d2df 100%);
+    position: relative;
+}
+
+    .content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.3'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+    }
+
+.features {
+    position: relative;
+    z-index: 1;
+}
+
+.feature {
+    margin-bottom: 3rem;
+    max-width: 450px;
+    position: relative;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+}
+
+    /* Background images for each feature */
+    .feature::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center right;
+        opacity: 0.25;
+        z-index: -1;
+        border-radius: 8px;
+    }
+
+    /* Specific background images for each feature */
+    .feature.security::before {
+        transform: scaleX(-1);
+        background-position: center left;
+        background-image: url('images/security-image.jpg');
+        /* Fallback SVG if image not found */
+    }
+
+    .feature.learning::before {
+        background-image: url('images/learning-image.jpg');
+        /* Fallback SVG if image not found */
+    }
+
+    .feature.community::before {
+        background-image: url('images/community-image.jpg');
+        /* Fallback SVG if image not found */
+    }
+
+    .feature:nth-child(even) {
+        margin-left: auto;
+        text-align: right;
+    }
+
+        .feature:nth-child(even)::before {
+            background-position: center left;
+        }
+
+    .feature h3 {
+        font-size: 1.4rem;
+        font-weight: 500;
+        margin-bottom: 0.8rem;
+        color: #1a1a1a;
+        position: relative;
+        z-index: 1;
+    }
+
+    .feature p {
+        color: #666;
+        line-height: 1.7;
+        position: relative;
+        z-index: 1;
+    }
+
+/* Unique button styles */
+.btn {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    background: #1a1a1a;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.1);
+        transition: left 0.3s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+.btn-secondary {
+    background: transparent;
+    color: #1a1a1a;
+    border: 1px solid #e8e8e8;
+}
+
+    .btn-secondary:hover {
+        background: #f8f9fa;
+    }
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Image container with unique aspect ratio */
+.image-container {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 4/3;
+    background: #f0f0f0;
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 2rem 0;
+    position: relative;
+}
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(20%) contrast(1.1);
+    }
+
+/* Footer */
+footer {
+    grid-area: footer;
+    padding: 2rem;
+    border-top: 1px solid #e8e8e8;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "nav"
+            "hero"
+            "content"
+            "footer";
+    }
+
+    .hero, .content {
+        padding: 2rem 1rem;
+    }
+
+    .nav-content {
+        padding: 0 1rem;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .feature:nth-child(even) {
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Subtle animations on scroll (CSS-only) */
+.feature {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: calc(var(--delay, 0) * 0.2s);
+}
+
+    .feature:nth-child(1) {
+        --delay: 1;
+    }
+
+    .feature:nth-child(2) {
+        --delay: 2;
+    }
+
+    .feature:nth-child(3) {
+        --delay: 3;
+    }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

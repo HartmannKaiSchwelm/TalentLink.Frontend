@@ -2,9 +2,9 @@
 @using TalentLink.Frontend.Models
 @inject HttpClient HttpClient
 
-<h3>Job Search</h3>
+<h3 class="text-center">Job Search</h3>
 
-<div>
+<div class="text-center">
     <label>Choose a category:</label>
     <select @onchange="OnCategoryChanged">
         <option value="">All Categories</option>
@@ -21,6 +21,8 @@
         }
     </select>
 </div>
+<div class="job-divider my-4"></div>
+
 
 @if (isLoading)
 {
@@ -47,7 +49,7 @@ else
                             <h5 class="job-title">@job.Title</h5>
                             <p class="job-category">@job.Category</p>
                             <p class="job-date mb-3">Erstellt: @job.CreatedAt.ToString("dd.MM.yyyy")</p>
-                            
+                            <span class=""><button class="btn btn-primary">Apply</button></span>
                         </div>
                     </div>
                 </div>

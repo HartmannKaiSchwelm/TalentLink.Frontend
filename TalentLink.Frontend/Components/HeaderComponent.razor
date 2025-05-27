@@ -6,51 +6,43 @@
 }
 else
 {
-    <nav class="navbar navbar-expand-lg navbar-light bg-transparent custom-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <img src="" alt="Logo" />
-                <span class="fw-semibold">TalentLink</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-
-                    @if (AuthService.Role == "Student")
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/jobsearch">Job finden</a>
-                        </li>
-                    }
-                    @if (AuthService.Role == "Senior")
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="/createjob">Job anbieten</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/jobsearch">Job suchen</a>
-                        </li>
-                    }
-                    <li class="nav-item">
-                        <a class="nav-link disabled">Tips und Tricks</a>
-                    </li>
+    <div class="container">
+        <nav>
+            <div class="nav-content">
+                <a href="/" class="logo"><img src="/images/IMG_3947.png" style="height: 80px;"/></a>
+                <ul class="nav-links">
+                    <li><a href="#">Jobs finden</a></li>
+                    <li><a href="#">Job anbieten</a></li>
+                    <li><a href="#">Über uns</a></li>
+                    <li><a href="#">Kontakt</a></li>
                 </ul>
-                <div class="d-flex gap-2">
-                    @if (!AuthService.IsAuthenticated)
-                    {
-                        <button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button>
-                        <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-outline-secondary" @onclick="LogoutAsync">Logout</button>
-                    }
-                </div> 
             </div>
-        </div>
-    </nav>
+            @* <div class="d-flex gap-2">
+                @if (!AuthService.IsAuthenticated)
+                {
+                    <button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button>
+                    <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary" @onclick="LogoutAsync">Logout</button>
+                }
+            </div> *@
+            @* <div class="d-flex gap-2">
+                @if (!AuthService.IsAuthenticated)
+                {
+                    <button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button>
+                    <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary" @onclick="LogoutAsync">Logout</button>
+                }
+            </div> *@
+        </nav>
+
+    </div>
+
 }
 
 
