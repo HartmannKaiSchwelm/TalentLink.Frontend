@@ -12,10 +12,19 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #33CEFF;
-    border-color: #33CEFF;
+    background-color: #a2d2df;
+    border-color: #a2d2df;
+    font-weight: 200;
+    font-size: 0.8rem;
+    color: #666;
 }
 
+.btn-outline-primary {
+    font-weight: 200;
+    font-size: 0.8rem;
+    color: #666;
+    border-color: #a2d2df;
+}
 
 
 .content {

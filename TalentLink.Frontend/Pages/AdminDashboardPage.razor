@@ -25,13 +25,26 @@ else if (userData == null || userData.Users == null)
 else
 {
     <p>Registrierte User: @userData.Users.Count</p>
-    <ul>
+   <table class="rounded-table">
+       <thead class="rounded-table">
+           <tr>
+               <th>User Role</th>
+               <th>Count</th>
+           </tr>
+           
+       </thead>
+       
         @foreach (var stat in userData.Users)
         {
-            <li>@stat.Role: @stat.Count</li>
+            <tr>
+            <td>@stat.Role</td>
+                <td>@stat.Count</td>
+            </tr>
         }
-    </ul>
-    <p>Erstellt Tips: @(userData.TotalTips ?? 0)</p>
+       
+    </table>
+    <p>Erstellte Tips: @(userData.TotalTips ?? 0)</p>
+    <p>Angelegte Jobs: @(userData.TotalJobs ?? 0)</p>
 }
 
 @code {

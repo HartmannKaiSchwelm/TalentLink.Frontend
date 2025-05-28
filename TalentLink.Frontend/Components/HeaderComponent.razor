@@ -9,36 +9,28 @@ else
     <div class="container">
         <nav>
             <div class="nav-content">
-                <a href="/" class="logo"><img src="/images/IMG_3947.png" style="height: 80px;"/></a>
-                <ul class="nav-links">
-                    <li><a href="#">Jobs finden</a></li>
-                    <li><a href="#">Job anbieten</a></li>
-                    <li><a href="#">Über uns</a></li>
-                    <li><a href="#">Kontakt</a></li>
-                </ul>
+                @* <a href="/" class="logo"><img src="/images/IMG_3947.png" style="height: 240px;"/></a> *@
+               
+                    <div class="nav-content">
+                        <ul class="nav-links d-flex justify-content-center">
+                            <li class="nav-item"><a href="/jobsearch">Jobs finden</a></li>
+                            <li class="nav-item"><a href="#">Job anbieten</a></li>
+                            <li class="nav-item"><a href="#">Über uns</a></li>
+                            <li class="nav-item"><a href="#">Kontakt</a></li>
+                            @if (!AuthService.IsAuthenticated)
+                {
+                            <li><button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button></li>
+                    <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-primary" @onclick="LogoutAsync">Logout</button>
+                }
+                        </ul>
+                    </div>
             </div>
-            @* <div class="d-flex gap-2">
-                @if (!AuthService.IsAuthenticated)
-                {
-                    <button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button>
-                    <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
-                }
-                else
-                {
-                    <button class="btn btn-outline-secondary" @onclick="LogoutAsync">Logout</button>
-                }
-            </div> *@
-            @* <div class="d-flex gap-2">
-                @if (!AuthService.IsAuthenticated)
-                {
-                    <button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button>
-                    <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
-                }
-                else
-                {
-                    <button class="btn btn-outline-secondary" @onclick="LogoutAsync">Logout</button>
-                }
-            </div> *@
+            
+            
         </nav>
 
     </div>
