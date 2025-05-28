@@ -51,6 +51,11 @@ namespace TalentLink.Frontend.Pages
             {
                 errorMessage = "Serverfehler beim Absenden der Bewerbung.";
             }
+            StateHasChanged();
+            await Task.Delay(2000);
+            successMessage = null;
+            errorMessage = null;
+            StateHasChanged();
         }
     }
 }

@@ -89,6 +89,10 @@ namespace TalentLink.Frontend.Pages
                 errorMessage = "Serverfehler beim Speichern des Jobs.";
             }
             StateHasChanged();
+            await Task.Delay(2000);
+            successMessage = null;
+            errorMessage = null;
+            StateHasChanged();
         }
     }
 }

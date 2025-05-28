@@ -7,6 +7,7 @@ namespace TalentLink.Frontend.Pages
     {
         private UserRegisterDto user = new UserRegisterDto();
         private string message;
+        private string errorMessage; 
 
         private async Task Register()
         {
@@ -19,9 +20,13 @@ namespace TalentLink.Frontend.Pages
             }
             else
             {
-                message = "Error creating user.";
+               errorMessage = "Error creating user.";
             }
-
+            StateHasChanged();
+            await Task.Delay(2000);
+            message = null;
+            errorMessage = null;
+            StateHasChanged();
         }
     }
 }
