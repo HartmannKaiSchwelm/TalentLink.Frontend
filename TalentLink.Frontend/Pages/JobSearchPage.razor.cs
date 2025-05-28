@@ -6,6 +6,8 @@ namespace TalentLink.Frontend.Pages
 {
     public partial class JobSearchPage
     {
+        [Parameter]
+        public Guid jobId { get; set; }
         private List<Job> jobs = new();
         private List<JobCategory> categories = new();
         private string catUID = string.Empty;
@@ -121,6 +123,13 @@ namespace TalentLink.Frontend.Pages
                 isLoading = false;
                 StateHasChanged();
             }
+
+
+        }
+        
+        public void ApplyTo(Guid jobId)
+        {
+            Navi.NavigateTo($"/apply/{jobId}");
         }
     }
 }

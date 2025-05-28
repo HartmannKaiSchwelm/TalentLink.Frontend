@@ -1,6 +1,7 @@
 ﻿@page "/jobsearch"
 @using TalentLink.Frontend.Models
 @inject HttpClient HttpClient
+@inject NavigationManager Navi
 
 <h3 class="text-center">Job Search</h3>
 
@@ -49,7 +50,7 @@ else
                             <h5 class="job-title">@job.Title</h5>
                             <p class="job-category">@job.Category</p>
                             <p class="job-date mb-3">Erstellt: @job.CreatedAt.ToString("dd.MM.yyyy")</p>
-                            <span class=""><button class="btn btn-primary">Apply</button></span>
+                            <span class=""><button class="btn btn-primary" @onclick="() => ApplyTo(job.Id)">Apply</button></span>
                         </div>
                     </div>
                 </div>

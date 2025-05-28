@@ -1,0 +1,32 @@
+﻿@page "/apply/{jobId:guid}"
+@inject HttpClient Httpclient
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+
+@if (job == null)
+{
+    <p>Lade Jobdetails...</p>
+}
+else
+{
+    <h4>@job.Title</h4>
+    <p>@job.Description</p>
+    <p>Kategorie: @job.Category</p>
+    <p>Preis pro Stunde: @job.PricePerHour €</p>
+    <!-- Bewerbungsformular hier -->
+    <EditForm Model="@application" OnValidSubmit="SubmitApplication">
+        <InputTextArea @bind-Value="application.Message" class="form-control" placeholder="Nachricht an den Anbieter (optional)" />
+        <button class="btn btn-primary mt-2" type="submit">Bewerben</button>
+    </EditForm>
+    @if (!string.IsNullOrEmpty(successMessage))
+    {
+        <div class="alert alert-success mt-2">@successMessage</div>
+    }
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger mt-2">@errorMessage</div>
+    }
+}
+
+@code {
+
+}
