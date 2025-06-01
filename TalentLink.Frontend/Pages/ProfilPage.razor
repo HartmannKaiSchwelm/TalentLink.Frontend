@@ -40,44 +40,29 @@
             {
                 <span>Hier könnten ihre vergebenen Jobs stehen.</span>
             }
-       
+        }
+        @if (AuthService.Role == "Student")
+        {
+            if (appliedJobs != null && appliedJobs.Any())
+            {
+                <h5 class="mt-3">Bewerbungen:</h5>
+                <ul class="list-group">
+                    @foreach (var job in appliedJobs)
+                    {
+                        <li class="list-group-item">
+                            <b>@job.JobTitle</b><br />
+                            <span>@job.AppliedAt</span>
+                            <span>Status: @job.Status</span>
+                            <button class="btn btn-primary" @onclick="() => CancelApplication(job.ApplicationId)">Cancel Application</button>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>Hier könnten ihre Bewerbungen stehen.</span>
+            }
         }
     </div>
 </div>
 
-@code {
-    List<Job> createdJobs = new();
-    bool loadingJobs = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadCreatedJobsAsync();
-    }
-
-    async Task LoadCreatedJobsAsync()
-    {
-        if (AuthService.Role != "Senior") return;
-        loadingJobs = true;
-        try
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Job/created-by-me");
-            if (!string.IsNullOrEmpty(AuthService.Token))
-            {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
-            }
-            var response = await HttpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                var jobs = await response.Content.ReadFromJsonAsync<List<Job>>();
-                if (jobs != null)
-                    createdJobs = jobs;
-            }
-        }
-        finally
-        {
-            loadingJobs = false;
-        }
-    }
-
-    void createJob() => Navi.NavigateTo("/createjob");
-}

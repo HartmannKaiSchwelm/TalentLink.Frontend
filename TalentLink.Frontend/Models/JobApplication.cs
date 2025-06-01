@@ -5,6 +5,8 @@
         public Guid Id { get; set; }
         public Guid JobId { get; set; }
         public Job Job { get; set; } = null!;
+        public string JobTitle { get; set; }
+       
 
         public Guid StudentId { get; set; }
         public Student Student { get; set; } = null!;

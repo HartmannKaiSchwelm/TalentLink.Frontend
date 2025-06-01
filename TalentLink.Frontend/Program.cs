@@ -15,7 +15,12 @@ namespace TalentLink.Frontend
             builder.Services.AddScoped<AuthenticationService>();
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
+            // Enum in string
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
+                DefaultRequestHeaders = { /* ... */ }
+            });
             var host = builder.Build();
             var authService = host.Services.GetRequiredService<AuthenticationService>();
             await authService.TryRestoreAuthAsync();
