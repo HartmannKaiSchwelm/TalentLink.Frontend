@@ -10,17 +10,26 @@ else
         <nav>
             <div class="nav-content">
                 @* <a href="/" class="logo"><img src="/images/IMG_3947.png" style="height: 240px;"/></a> *@
-               
-                    <div class="nav-content">
-                        <ul class="nav-links d-flex justify-content-center">
-                            <li class="nav-item"><a href="/jobsearch">Jobs finden</a></li>
+
+                <div class="nav-content">
+                    <ul class="nav-links d-flex justify-content-center">
+                        <li class="nav-item"><a href="/jobsearch">Jobs finden</a></li>
+                        @if (AuthService.Role == "Senior" || AuthService.Role == "Admin")
+                        {
                             <li class="nav-item"><a href="/createjob">Job anbieten</a></li>
-                            <li class="nav-item"><a href="#">Über uns</a></li>
+                        }
+                        <li class="nav-item"><a href="#">Über uns</a></li>
+                        <li class="nav-item"><a href="/tips">Tips und Tricks</a></li>
                             <li class="nav-item"><a href="#">Kontakt</a></li>
+                            <li class="nav-item"><a href="/profile">Profil</a></li>
+                            @if(AuthService.Role == "Admin"){
+                                <li class="nav-item"><a href="/admindashboard">Dashboard</a></li>
+                            }
                             @if (!AuthService.IsAuthenticated)
                 {
                             <li><button class="btn btn-outline-primary" @onclick="NavToLogin">Login</button></li>
                     <button class="btn btn-primary" @onclick="NavToRegister">Register</button>
+                    
                 }
                 else
                 {
