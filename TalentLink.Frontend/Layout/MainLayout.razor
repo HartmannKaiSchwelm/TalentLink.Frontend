@@ -1,15 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @using TalentLink.Frontend.Components
-
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
 <div class="page">
    
 
     <main>
        <HeaderComponent/>
-       
+       <div class="flex">
+        @if(AuthService.Role == "Admin")
+        {
+            <SidebarComponent/>
+
+        }
         <article class="content px-4">
             @Body
-        </article>
+            </article>
+        </div>
         <FooterComponent/>
     </main>
 </div>

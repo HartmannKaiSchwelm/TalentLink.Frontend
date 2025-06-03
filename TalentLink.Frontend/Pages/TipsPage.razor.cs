@@ -12,7 +12,7 @@ namespace TalentLink.Frontend.Pages
             try
             {
 
-                var response = await HttpClient.GetAsync("https://localhost:7024/api/Tips");
+                var response = await Httpclient.GetAsync("https://localhost:7024/api/Tips");
                 response.EnsureSuccessStatusCode();
 
 

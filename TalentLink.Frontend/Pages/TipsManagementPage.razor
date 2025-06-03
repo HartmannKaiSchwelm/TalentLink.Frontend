@@ -1,0 +1,84 @@
+﻿@page "/tipsmanagement"
+@inject HttpClient Httpclient
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+
+<h3>TipsManagementPage</h3>
+<button class="btn btn-primary mb-2" @onclick="CreateTip">Neuen Tip erstellen</button>
+@if (tips.Any())
+{
+    @foreach (var tip in tips)
+    {
+        <div class="tip-card border p-2 flex">
+            <p>@tip.Title</p>
+            <button class="btn btn-primary" @onclick="() => EditTip(tip)">Edit</button>
+            <button class="btn btn-danger" @onclick="() => DeleteTip(tip.Id)">Delete</button>
+        </div>
+    }
+}
+else
+{
+    <p>Laden...</p>
+}
+@if (showCreateModal)
+{
+    <div class="modal-blur-backdrop"></div>
+    <div class="modal show d-block custom-modal-center" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Neuen Tip erstellen</h5>
+                    <button type="button" class="btn-close" @onclick="CloseCreateModal"></button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control mb-2" @bind="newTip.Title" placeholder="Titel" />
+                    <textarea class="form-control" @bind="newTip.Content" placeholder="Inhalt"></textarea>
+                    @if (!string.IsNullOrEmpty(successMessageCreate))
+                    {
+                        <div class="alert alert-success mt-2">@successMessageCreate</div>
+                    }
+                    @if (!string.IsNullOrEmpty(errorMessageCreate))
+                    {
+                        <div class="alert alert-danger mt-2">@errorMessageCreate</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseCreateModal">Abbrechen</button>
+                    <button class="btn btn-primary" @onclick="SaveNewTip">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@if (showEditModal)
+{
+    <div class="modal-blur-backdrop"></div>
+    <div class="modal show d-block custom-modal-center" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tip bearbeiten</h5>
+                    <button type="button" class="btn-close" @onclick="CloseEditModal"></button>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control mb-2" @bind="editTip.Title" placeholder="Titel" />
+                    <textarea class="form-control" @bind="editTip.Content" placeholder="Inhalt"></textarea>
+                    @if (!string.IsNullOrEmpty(successMessage))
+                    {
+                        <div class="alert alert-success mt-2">@successMessage</div>
+                    }
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-2">@errorMessage</div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseEditModal">Abbrechen</button>
+                    <button class="btn btn-primary" @onclick="SaveTip">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@code {
+
+}
