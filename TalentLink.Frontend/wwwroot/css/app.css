@@ -108,3 +108,24 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+article.content {
+    flex: 1 0 auto;
+}
+
+footer, .footer {
+    flex-shrink: 0;
+}
