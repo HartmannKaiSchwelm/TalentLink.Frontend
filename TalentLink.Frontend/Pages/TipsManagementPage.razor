@@ -8,10 +8,12 @@
 {
     @foreach (var tip in tips)
     {
-        <div class="tip-card border p-2 flex">
-            <p>@tip.Title</p>
-            <button class="btn btn-primary" @onclick="() => EditTip(tip)">Edit</button>
+        <div class="tip-card border p-2 flex align-items-center justifyx-content-between">
+            <p class="mb-0">@tip.Title</p>
+            <div>
+            <button class="btn btn-primary me-2" @onclick="() => EditTip(tip)">Edit</button>
             <button class="btn btn-danger" @onclick="() => DeleteTip(tip.Id)">Delete</button>
+        </div>
         </div>
     }
 }
@@ -78,6 +80,10 @@ else
             </div>
         </div>
     </div>
+}
+@if (!string.IsNullOrEmpty(DeleteMessage))
+{
+    <div class="alert alert-success mt-2">@DeleteMessage</div>
 }
 @code {
 

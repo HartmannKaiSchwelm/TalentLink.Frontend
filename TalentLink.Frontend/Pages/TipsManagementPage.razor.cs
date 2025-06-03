@@ -15,6 +15,7 @@ namespace TalentLink.Frontend.Pages
         private TipCreateDto newTip = new();
         private string? successMessageCreate;
         private string? errorMessageCreate;
+        private string? DeleteMessage;
 
         protected override async Task OnInitializedAsync()
         {
@@ -47,6 +48,11 @@ namespace TalentLink.Frontend.Pages
         {
             try
             {
+                if (!string.IsNullOrEmpty(AuthService.Token))
+                {
+                    Httpclient.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+                }
                 var response = await Httpclient.DeleteAsync($"https://localhost:7024/api/Tips/{id}");
                 if (response.IsSuccessStatusCode)
                 {
@@ -60,6 +66,10 @@ namespace TalentLink.Frontend.Pages
                 {
                     // Optional: Fehlerbehandlung
                 }
+                DeleteMessage = "Tip gelöscht";
+                StateHasChanged(); 
+                await Task.Delay(2000);
+                DeleteMessage = null; 
             }
             catch (Exception ex)
             {
