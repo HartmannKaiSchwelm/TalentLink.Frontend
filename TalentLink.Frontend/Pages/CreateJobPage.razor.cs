@@ -74,6 +74,7 @@ namespace TalentLink.Frontend.Pages
                     successMessage = "Job erfolgreich angelegt!";
                     newJob = new CreateJobDto();
                     selectedCategoryId = null;
+                    Navi.NavigateTo("/profile", true); // true = forceLoad
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {

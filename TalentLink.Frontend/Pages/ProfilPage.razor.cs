@@ -10,10 +10,12 @@ namespace TalentLink.Frontend.Pages
         List<Job> createdJobs = new();
         List<MyApplicationDto> appliedJobs = new();
         bool loadingJobs = false;
+        private Dictionary<Guid, int> jobApplicationCounts = new();
 
         protected override async Task OnInitializedAsync()
         {
             await LoadCreatedJobsAsync();
+            await LoadApplicationCountsAsync();
             await LoadAppliedJobsListAsync();
         }
 
@@ -41,30 +43,66 @@ namespace TalentLink.Frontend.Pages
                 loadingJobs = false;
             }
         }
-        async Task LoadAppliedJobsListAsync()
+
+        async Task LoadApplicationCountsAsync()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Application/mine");
-            if (!string.IsNullOrEmpty(AuthService.Token))
+            if (AuthService.Role != "Senior") return;
+            jobApplicationCounts.Clear();
+            foreach (var job in createdJobs)
             {
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
-            }
-            var response = await HttpClient.SendAsync(request);
-            if (response.IsSuccessStatusCode)
-            {
-                var jobs = await response.Content.ReadFromJsonAsync<List<MyApplicationDto>>(new JsonSerializerOptions
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7024/api/Job/{job.Id}/applications");
+                if (!string.IsNullOrEmpty(AuthService.Token))
                 {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
-                });
-                if (jobs != null)
+                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+                }
+                var response = await HttpClient.SendAsync(request);
+                if (response.IsSuccessStatusCode)
                 {
-                    appliedJobs = jobs; 
+                    var applications = await response.Content.ReadFromJsonAsync<List<JobApplication>>();
+                    jobApplicationCounts[job.Id] = applications?.Count ?? 0;
+                }
+                else
+                {
+                    jobApplicationCounts[job.Id] = 0;
                 }
             }
         }
+
+        int GetApplicationCount(Guid jobId) =>
+            jobApplicationCounts.TryGetValue(jobId, out var count) ? count : 0;
+
+        void NavigateToJobApplications(Guid jobId)
+        {
+            Navi.NavigateTo($"/job-applications/{jobId}");
+        }
+
+        async Task LoadAppliedJobsListAsync()
+        {
+            if (AuthService.Role == "Student")
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Application/mine");
+                if (!string.IsNullOrEmpty(AuthService.Token))
+                {
+                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+                }
+                var response = await HttpClient.SendAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    var jobs = await response.Content.ReadFromJsonAsync<List<MyApplicationDto>>(new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        Converters = { new JsonStringEnumConverter() }
+                    });
+                    if (jobs != null)
+                    {
+                        appliedJobs = jobs;
+                    }
+                }
+            }
+        }
+
         async Task CancelApplication(Guid applicationId)
         {
-            
             var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7024/api/Application/{applicationId}");
             if (!string.IsNullOrEmpty(AuthService.Token))
             {
@@ -81,9 +119,8 @@ namespace TalentLink.Frontend.Pages
                     StateHasChanged();
                 }
             }
-            
         }
-        
+
         void createJob() => Navi.NavigateTo("/createjob");
     }
 }

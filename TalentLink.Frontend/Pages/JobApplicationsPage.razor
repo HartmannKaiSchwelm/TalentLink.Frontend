@@ -1,0 +1,97 @@
+@page "/job-applications/{jobId:guid}"
+@using TalentLink.Frontend.Models
+@inject HttpClient HttpClient
+@inject NavigationManager Navi
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+
+<h4>Bewerbungen für diesen Job</h4>
+@if (job == null)
+{
+    <div>Lade Jobdaten...</div>
+}
+else
+{
+    <div class="card p-3 mb-3">
+        <h5>@job.Title</h5>
+        <div>@job.Description</div>
+        <div>Kategorie: @job.Category</div>
+        <div>Preis pro Stunde: @job.PricePerHour €</div>
+    </div>
+    <h5>Bewerbungen:</h5>
+    @if (applications == null)
+    {
+        <div>Lade Bewerbungen...</div>
+    }
+    else if (!applications.Any())
+    {
+        <div>Keine Bewerbungen vorhanden.</div>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var app in applications)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <b>@app.Student?.Name</b> <br />
+                        <span>@app.Message</span><br />
+                        <span>Status: @app.Status</span>
+                    </div>
+                    <div>
+                        @if (app.Status == ApplicationStatus.Pending)
+                        {
+                            <button class="btn btn-success btn-sm me-2" @onclick="() => UpdateStatus(app.Id, ApplicationStatus.Accepted)">Annehmen</button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => UpdateStatus(app.Id, ApplicationStatus.Rejected)">Ablehnen</button>
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    [Parameter] public Guid jobId { get; set; }
+    private Job? job;
+    private List<JobApplication>? applications;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadJobAndApplications();
+    }
+
+    private async Task LoadJobAndApplications()
+    {
+        // Jobdetails laden
+        job = await HttpClient.GetFromJsonAsync<Job>($"https://localhost:7024/api/Job/{jobId}");
+        // Bewerbungen laden
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7024/api/Job/{jobId}/applications");
+        if (!string.IsNullOrEmpty(AuthService.Token))
+        {
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+        }
+        var response = await HttpClient.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            applications = await response.Content.ReadFromJsonAsync<List<JobApplication>>();
+        }
+        else
+        {
+            applications = new List<JobApplication>();
+        }
+    }
+
+    private async Task UpdateStatus(Guid applicationId, ApplicationStatus status)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"https://localhost:7024/api/Application/{applicationId}/status?status={status}");
+        if (!string.IsNullOrEmpty(AuthService.Token))
+        {
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
+        }
+        var response = await HttpClient.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadJobAndApplications();
+        }
+    }
+}

@@ -31,9 +31,11 @@
                 <ul class="list-group mt-3">
                     @foreach (var job in createdJobs)
                     {
-                        <li class="list-group-item">
-                            <b>@job.Title</b><br />
-                            <span>@job.Description</span>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span style="cursor:pointer;" @onclick="() => NavigateToJobApplications(job.Id)">
+                                <b>@job.Title</b>
+                            </span>
+                            <span class="badge bg-primary rounded-pill">@GetApplicationCount(job.Id)</span>
                         </li>
                     }
                 </ul>
