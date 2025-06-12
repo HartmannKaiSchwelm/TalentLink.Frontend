@@ -7,5 +7,7 @@
         public string Password { get; set; } = null!;
         public int Role { get; set; } // 0 = Student, 1 = Senior, 2 = Parent
 
+        public string? StudentEmail { get; set; }
+
     }
 }

@@ -1,0 +1,6 @@
+﻿.content {
+    grid-area: content;
+    padding: 2rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 50%, #a2d2df 100%);
+    position: relative;
+}

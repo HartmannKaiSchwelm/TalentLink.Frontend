@@ -4,7 +4,7 @@
 @using TalentLink.Frontend.Models
 @inject HttpClient HttpClient
 
-<h3>RegisterPage</h3>
+<h3>Registrierung</h3>
 <form>
     <div class="form-group mb-3">
         <InputSelect @bind-Value="user.Role" class="form-control">
@@ -24,6 +24,13 @@
         <label for="email">Email</label>
         <input type="email" id="email" @bind="@user.Email" class="form-control" required />
     </div>
+    @if (user.Role == 2)
+    {
+        <div class="form-group">
+            <label for="studentEmail">E-Mail Ihres Kindes</label>
+            <input type="email" id="studentEmail" @bind="@user.StudentEmail" class="form-control" required/>
+        </div>
+    }
     <div class="form-group mb-3">
         <label for="password">Password</label>
         <input type="password" id="password" @bind="@user.Password" class="form-control" required />

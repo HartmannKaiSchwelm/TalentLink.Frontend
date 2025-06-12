@@ -17,6 +17,7 @@ namespace TalentLink.Frontend.Services
         public string? Email { get; private set; }
         public string Role { get; private set; }
 
+        public Guid? VerifiedByParentId { get; set; }
         public ICollection<Job> CreatedJobs { get; set; }
 
         public ICollection<Rating> GivenRatings { get; private set; }
@@ -31,13 +32,14 @@ namespace TalentLink.Frontend.Services
         {
             _localStorage = localStorage;
         }
-        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job> createdJobs)
+        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job> createdJobs, Guid? verifiedByParentId)
         {
             Token = token;
             UserName = userName;
             Email = email;
             Role = role;
             CreatedJobs = createdJobs;
+            VerifiedByParentId = verifiedByParentId;
 
             IsAuthenticated = true;
             await _localStorage.SetItemAsync("auth_token", token);
@@ -45,6 +47,7 @@ namespace TalentLink.Frontend.Services
             await _localStorage.SetItemAsync("auth_role", role);
             await _localStorage.SetItemAsync("auth_email", email);
             await _localStorage.SetItemAsync("auth_createdJobs", createdJobs);
+            await _localStorage.SetItemAsync("auth_verifiedByParentId", verifiedByParentId);
             OnAuthStateChanged?.Invoke();
         }
         public Task AuthLoadedTask => _authLoadedTcs.Task;
@@ -57,6 +60,7 @@ namespace TalentLink.Frontend.Services
             Role = await _localStorage.GetItemAsync<string>("auth_role");
             Email = await _localStorage.GetItemAsync<string>("auth_email");
             CreatedJobs = await _localStorage.GetItemAsync<ICollection<Job>>("auth_createdJobs");
+            VerifiedByParentId = await _localStorage.GetItemAsync<Guid>("auth_verifiedByParentId");
             IsAuthenticated = !string.IsNullOrEmpty(Token);
             IsAuthLoaded = true;
             _authLoadedTcs.TrySetResult();
@@ -75,6 +79,7 @@ namespace TalentLink.Frontend.Services
             await _localStorage.RemoveItemAsync("auth_role");
             await _localStorage.RemoveItemAsync("auth_email");
             await _localStorage.RemoveItemAsync("auth_createdJobs");
+            await _localStorage.RemoveItemAsync("auth_verifiedByParentId");
             OnAuthStateChanged?.Invoke();
         }
 

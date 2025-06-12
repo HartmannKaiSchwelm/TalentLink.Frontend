@@ -20,7 +20,7 @@ namespace TalentLink.Frontend.Pages
                 var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
                 if (auth is not null)
                 {
-                    AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs);
+                    AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs, auth.VerifiedByParentId);
                 }
                 if (AuthService.Role == "Admin")
                 {

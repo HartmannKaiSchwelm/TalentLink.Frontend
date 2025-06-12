@@ -13,6 +13,8 @@ namespace TalentLink.Frontend.Pages
         private string catUID = string.Empty;
         private bool isLoading = false;
         private string errorMessage = string.Empty;
+        private string notAuthenticatedMessage = string.Empty;
+        private bool showNotAuthenticatedModal = false; 
 
         protected override async Task OnInitializedAsync()
         {
@@ -128,8 +130,24 @@ namespace TalentLink.Frontend.Pages
         }
         
         public void ApplyTo(Guid jobId)
+
         {
-            Navi.NavigateTo($"/apply/{jobId}");
+            if (AuthService.VerifiedByParentId != null)
+            {
+                Navi.NavigateTo($"/apply/{jobId}");
+            }
+            else
+            {
+                notAuthenticatedMessage = "Deine Eltern haben dich nicht für die Bewerbung freigeschaltet. Bitte kontaktiere sie, um deine Bewerbung zu starten";
+                showNotAuthenticatedModal = true; 
+            }
+            StateHasChanged();
+        }
+
+        private void CloseNotAuthenticatedModal()
+        {
+            showNotAuthenticatedModal = false;
+            notAuthenticatedMessage = string.Empty;
         }
     }
 }
