@@ -3,8 +3,6 @@ using System.Net.Http.Json;
 using TalentLink.Frontend.Models;
 using TalentLink.Frontend.Services;
 
-
-
 namespace TalentLink.Frontend.Pages
 {
     public partial class LoginPage
@@ -20,7 +18,7 @@ namespace TalentLink.Frontend.Pages
                 var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
                 if (auth is not null)
                 {
-                    AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs, auth.VerifiedByParentId);
+                    await AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs, auth.VerifiedByParentId, auth.Id);
                 }
                 if (AuthService.Role == "Admin")
                 {

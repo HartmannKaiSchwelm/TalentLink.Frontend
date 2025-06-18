@@ -11,5 +11,7 @@
         public string Category { get; set; }
         public string CategoryImage { get; set; }
         public Guid CreatedById { get; set; }
+        public bool IsAssigned { get; set; } = false; 
+        public bool IsPaid {get; set;} = false; 
     }
 }

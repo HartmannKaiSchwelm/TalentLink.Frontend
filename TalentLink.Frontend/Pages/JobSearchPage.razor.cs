@@ -63,7 +63,12 @@ namespace TalentLink.Frontend.Pages
                 var response = await HttpClient.GetAsync("https://localhost:7024/api/Job");
                 if (response.IsSuccessStatusCode)
                 {
-                    jobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                    var allJobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                    // Boosted zuerst, dann nach CreatedAt, nur bezahlte Jobs
+                    jobs = allJobs.Where(j => j.IsPaid)
+                        .OrderByDescending(j => j.IsBoosted)
+                        .ThenByDescending(j => j.CreatedAt)
+                        .ToList();
                     if (!jobs.Any())
                     {
                         errorMessage = "No jobs returned from the API.";
@@ -104,7 +109,12 @@ namespace TalentLink.Frontend.Pages
                 var response = await HttpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
-                    jobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                    var allJobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                    // Boosted zuerst, dann nach CreatedAt, nur bezahlte Jobs
+                    jobs = allJobs.Where(j => j.IsPaid)
+                        .OrderByDescending(j => j.IsBoosted)
+                        .ThenByDescending(j => j.CreatedAt)
+                        .ToList();
                     if (!jobs.Any())
                     {
                         errorMessage = "No jobs found for the selected category.";
@@ -125,12 +135,9 @@ namespace TalentLink.Frontend.Pages
                 isLoading = false;
                 StateHasChanged();
             }
-
-
         }
         
         public void ApplyTo(Guid jobId)
-
         {
             if (AuthService.VerifiedByParentId != null)
             {
@@ -141,13 +148,6 @@ namespace TalentLink.Frontend.Pages
                 notAuthenticatedMessage = "Deine Eltern haben dich nicht für die Bewerbung freigeschaltet. Bitte kontaktiere sie, um deine Bewerbung zu starten";
                 showNotAuthenticatedModal = true; 
             }
-            StateHasChanged();
-        }
-
-        private void CloseNotAuthenticatedModal()
-        {
-            showNotAuthenticatedModal = false;
-            notAuthenticatedMessage = string.Empty;
         }
     }
 }

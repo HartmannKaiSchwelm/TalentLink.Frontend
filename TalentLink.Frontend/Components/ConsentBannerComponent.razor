@@ -1,0 +1,40 @@
+﻿@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+
+@if (showBanner)
+{
+    <div class="modal-blur-backdrop"></div>
+    <div class="modal show d-block custom-modal-center" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Cookie-Einstellungen</h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Diese Website verwendet Cookies für die technische Funktionalität. Durch Klicken auf "Akzeptieren" stimmen Sie der Verwendung technisch notwendiger Cookies zu.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @onclick="Accept">Akzeptieren</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool showBanner = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var consent = await LocalStorage.GetItemAsync<bool>("cookie_consent");
+        showBanner = !consent;
+    }
+
+    private async Task Accept()
+    {
+        await LocalStorage.SetItemAsync("cookie_consent", true);
+        showBanner = false;
+        StateHasChanged();
+    }
+}

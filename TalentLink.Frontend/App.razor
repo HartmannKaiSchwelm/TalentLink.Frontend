@@ -1,4 +1,6 @@
 ﻿@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+@using TalentLink.Frontend.Components
+@using Blazored.LocalStorage
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -12,7 +14,7 @@
         </LayoutView>
     </NotFound>
 </Router>
-
+<ConsentBannerComponent />
 @code{
     protected override async Task OnInitializedAsync()
     {

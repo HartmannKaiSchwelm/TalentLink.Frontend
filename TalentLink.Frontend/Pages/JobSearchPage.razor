@@ -48,7 +48,13 @@ else
                             <img src="@job.CategoryImage" alt="@job.Category">
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <h5 class="job-title">@job.Title</h5>
+                            <h5 class="job-title">
+                                @job.Title
+                                @if (job.IsBoosted)
+                                {
+                                    <span class="badge bg-warning text-dark ms-2">Boosted</span>
+                                }
+                            </h5>
                             <p class="job-category">@job.Category</p>
                             <p class="job-date mb-3">Erstellt: @job.CreatedAt.ToString("dd.MM.yyyy")</p>
                             <span class=""><button class="btn btn-primary" @onclick="() => ApplyTo(job.Id)">Apply</button></span>
@@ -85,4 +91,12 @@ else
             </div>
         </div>
     </div>
+}
+
+@code {
+    private void CloseNotAuthenticatedModal()
+    {
+        showNotAuthenticatedModal = false;
+        notAuthenticatedMessage = string.Empty;
+    }
 }

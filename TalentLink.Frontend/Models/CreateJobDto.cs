@@ -7,5 +7,6 @@
         public JobCategory Category { get; set; } = null!;
         public decimal PricePerHour { get; set; }
         public bool IsBoosted { get; set; }
+        public Guid CreatedById { get; set; } // hinzugefügt für Backend-Kompatibilität
     }
 }
