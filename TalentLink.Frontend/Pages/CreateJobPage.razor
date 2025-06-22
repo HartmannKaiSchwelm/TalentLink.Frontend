@@ -1,8 +1,9 @@
-﻿@page "/createjob"
+@page "/createjob"
 @using TalentLink.Frontend.Models
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
 @inject HttpClient HttpClient
 @inject NavigationManager Navi
+@inject IJSRuntime JS
 
 <div class="container d-flex justify-content-center align-items-center content" style="min-height: 80vh;">
     <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
@@ -21,11 +22,22 @@
                     }
                 </InputSelect>
             </div>
-            <div class="form-check mb-2">
-                <InputCheckbox @bind-Value="newJob.IsBoosted" class="form-check-input" />
+            <div class="form-check mb-3">
+                <InputCheckbox @bind-Value="newJob.IsBoosted" class="form-check-input" id="boosted" />
                 <label class="form-check-label">Job hervorheben (Boosted)</label>
             </div>
-            <button class="btn btn-primary w-100" type="submit">Job speichern</button>
+            
+            <div class="mb-3">
+                <div class="alert alert-info">
+                    <i class="fas fa-shield-alt"></i> 
+                    <strong>Sicherheitshinweis:</strong> Ihre Zahlung wird durch Stripe Radar geschützt, 
+                    das fortschrittliche Betrugserkennung in Echtzeit bietet.
+                </div>
+            </div>
+            
+            <button class="btn btn-primary w-100" type="submit">
+                <span>Job speichern und zur Zahlung</span>
+            </button>
         </EditForm>
         @if (!string.IsNullOrEmpty(successMessage))
         {
@@ -35,9 +47,10 @@
         {
             <div class="alert alert-danger mt-2">@errorMessage</div>
         }
+        
     </div>
 </div>
 
 @code {
-    
+    // Captcha-Steuerung wird in der .cs-Datei implementiert
 }

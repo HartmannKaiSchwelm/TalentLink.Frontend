@@ -1,4 +1,6 @@
-﻿using System.Net.Http.Json;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using Microsoft.JSInterop;
 using TalentLink.Frontend.Models;
 
 namespace TalentLink.Frontend.Pages
@@ -15,7 +17,6 @@ namespace TalentLink.Frontend.Pages
         {
             await LoadCategoriesAsync();
         }
-
         private async Task LoadCategoriesAsync()
         {
             try
@@ -55,24 +56,30 @@ namespace TalentLink.Frontend.Pages
         {
             errorMessage = null;
             successMessage = null;
+            
+            // Fraud protection is now handled by Stripe Radar during payment
+            
             if (selectedCategoryId == null)
             {
                 errorMessage = "Bitte wählen Sie eine Kategorie.";
                 return;
             }
+            
             var selectedCategory = categories.FirstOrDefault(c => c.Id == selectedCategoryId);
             if (selectedCategory == null)
             {
                 errorMessage = "Ungültige Kategorie.";
                 return;
             }
+            
             newJob.Category = new JobCategory
             {
                 Id = selectedCategory.Id,
                 Name = selectedCategory.Name,
                 ImageUrl = selectedCategory.ImageUrl
             };
-
+            
+            Console.WriteLine("=== CreateJob started ===");
             // Setze CreatedById, falls vorhanden
             try
             {
@@ -95,9 +102,9 @@ namespace TalentLink.Frontend.Pages
                 StateHasChanged();
                 return;
             }
-
             try
             {
+                Console.WriteLine("=== Sending CreateJob Request ===");
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/Job")
                 {
                     Content = JsonContent.Create(newJob)
@@ -107,9 +114,13 @@ namespace TalentLink.Frontend.Pages
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
                 }
                 var response = await HttpClient.SendAsync(request);
+                Console.WriteLine($"Job creation response: {response.StatusCode}");
                 if (response.IsSuccessStatusCode)
                 {
                     var createdJob = await response.Content.ReadFromJsonAsync<Job>();
+                    Console.WriteLine($"Job created with ID: {createdJob?.Id}");
+
+                    Console.WriteLine("=== Starting Stripe session creation ===");
                     if (createdJob != null)
                     {
                         // Stripe-Session anfordern - mit besserer Fehlerbehandlung
@@ -121,7 +132,7 @@ namespace TalentLink.Frontend.Pages
                                 {
                                     jobId = createdJob.Id,
                                     amount = 499,
-                                    successUrl = $"{Navi.BaseUri}payment/success",
+                                    successUrl = $"{Navi.BaseUri}paymentsuccess",
                                     cancelUrl = $"{Navi.BaseUri}payment/cancel"
                                 })
                             };
@@ -132,19 +143,32 @@ namespace TalentLink.Frontend.Pages
                             }
 
                             var stripeResponse = await HttpClient.SendAsync(stripeRequest);
+                            Console.WriteLine($"Stripe response status: {stripeResponse.StatusCode}");
 
                             if (stripeResponse.IsSuccessStatusCode)
                             {
                                 // Debug: Zeige die rohe Antwort
                                 var rawContent = await stripeResponse.Content.ReadAsStringAsync();
+                                Console.WriteLine($"Stripe raw response: {rawContent}");
+
+                                Console.WriteLine("=== Navigating to Stripe ===");
                                 Console.WriteLine($"Stripe API Response: {rawContent}");
+
 
                                 try
                                 {
                                     var stripeSession = await stripeResponse.Content.ReadFromJsonAsync<StripeSessionResponse>();
                                     if (stripeSession != null && !string.IsNullOrEmpty(stripeSession.Url))
                                     {
-                                        Navi.NavigateTo(stripeSession.Url, forceLoad: true);
+                                        await Task.Delay(500);
+                                        try {
+                                            // JavaScript-Fehlerbehandlung aktivieren, bevor wir zu Stripe navigieren
+                                            await JS.InvokeVoidAsync("eval", new object[] { "window.stripeErrorHandling.errorHandled = false;" });
+                                            Navi.NavigateTo(stripeSession.Url, forceLoad: true);
+                                        } catch (Exception jsEx) {
+                                            Console.WriteLine($"Error invoking JS: {jsEx.Message}");
+                                            Navi.NavigateTo(stripeSession.Url, forceLoad: true);
+                                        }
                                         return;
                                     }
                                     else
@@ -165,10 +189,29 @@ namespace TalentLink.Frontend.Pages
                                 Console.WriteLine($"Stripe API Error: {stripeResponse.StatusCode} - {errorContent}");
                             }
                         }
-                        catch (Exception ex)
+                        catch (HttpRequestException ex)
                         {
-                            errorMessage = $"Stripe-Verbindungsfehler: {ex.Message}";
+                            Console.WriteLine($"HttpRequestException: {ex.Message}");
+                            Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                            errorMessage = $"Stripe-Verbindungsfehler: Es gab ein Problem mit der Netzwerkverbindung. Der Job wurde erstellt, aber die Zahlung konnte nicht abgeschlossen werden.";
                             Console.WriteLine($"Stripe connection error: {ex}");
+                            
+                            // Dem Benutzer die Möglichkeit geben, trotzdem fortzufahren
+                            if (await JS.InvokeAsync<bool>("confirm", new object[] { "Möchten Sie trotz des Netzwerkfehlers fortfahren? (Der Job wurde bereits erstellt)" }))
+                            {
+                                await JS.InvokeVoidAsync("window.stripeErrorHandling.handleErrorAndContinue", Array.Empty<object>());
+                            }
+                        }
+                        catch (TaskCanceledException ex)
+                        {
+                            Console.WriteLine($"TaskCanceledException: {ex.Message}");
+                            errorMessage = $"Stripe-Timeout: Die Anfrage wurde abgebrochen. Der Job wurde erstellt, aber die Zahlung konnte nicht abgeschlossen werden.";
+                            
+                            // Dem Benutzer die Möglichkeit geben, trotzdem fortzufahren
+                            if (await JS.InvokeAsync<bool>("confirm", new object[] { "Die Anfrage hat zu lange gedauert. Möchten Sie trotzdem fortfahren? (Der Job wurde bereits erstellt)" }))
+                            {
+                                await JS.InvokeVoidAsync("window.stripeErrorHandling.handleErrorAndContinue", Array.Empty<object>());
+                            }
                         }
                     }
                 }
@@ -184,8 +227,14 @@ namespace TalentLink.Frontend.Pages
             }
             catch (Exception ex)
             {
-                errorMessage = $"Serverfehler beim Speichern des Jobs: {ex.Message}";
+                errorMessage = $"Fehler beim Speichern des Jobs: {ex.Message}";
                 Console.WriteLine($"Job creation error: {ex}");
+                
+                // Bei allgemeinen Fehlern auch die Möglichkeit geben, fortzufahren
+                if (await JS.InvokeAsync<bool>("confirm", new object[] { "Es ist ein unerwarteter Fehler aufgetreten. Möchten Sie trotzdem zur Zahlungsseite fortfahren?" }))
+                {
+                    await JS.InvokeVoidAsync("window.stripeErrorHandling.handleErrorAndContinue", Array.Empty<object>());
+                }
             }
 
             StateHasChanged();
@@ -199,5 +248,6 @@ namespace TalentLink.Frontend.Pages
         {
             public string Url { get; set; } = string.Empty;
         }
+        // Captcha functionality removed - fraud protection now handled by Stripe Radar
     }
 }
