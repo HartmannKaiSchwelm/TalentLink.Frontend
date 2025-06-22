@@ -62,8 +62,20 @@ namespace TalentLink.Frontend.Services
             Role = await _localStorage.GetItemAsync<string>("auth_role");
             Email = await _localStorage.GetItemAsync<string>("auth_email");
             CreatedJobs = await _localStorage.GetItemAsync<ICollection<Job>>("auth_createdJobs");
-            VerifiedByParentId = await _localStorage.GetItemAsync<Guid>("auth_verifiedByParentId");
-            UserId = await _localStorage.GetItemAsync<Guid>("auth_userId");
+
+            // Sicheres Parsen für optionale Guids
+            var verifiedByParentIdStr = await _localStorage.GetItemAsync<string>("auth_verifiedByParentId");
+            if (Guid.TryParse(verifiedByParentIdStr, out var parsedVerifiedByParentId))
+                VerifiedByParentId = parsedVerifiedByParentId;
+            else
+                VerifiedByParentId = null;
+
+            var userIdStr = await _localStorage.GetItemAsync<string>("auth_userId");
+            if (Guid.TryParse(userIdStr, out var parsedUserId))
+                UserId = parsedUserId;
+            else
+                UserId = Guid.Empty;
+
             IsAuthenticated = !string.IsNullOrEmpty(Token);
             IsAuthLoaded = true;
             _authLoadedTcs.TrySetResult();

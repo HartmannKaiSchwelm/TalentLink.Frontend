@@ -1,9 +1,13 @@
 ﻿@page "/tips"
 @inject HttpClient Httpclient
 @using TalentLink.Frontend.Models
+<div class="tips-bg">
+    <h3>Tips und Tricks - Links (mit freundlicher Genehmigung von azubiyo.de)</h3>
+    <div class="container mt-4">
+        <a class="nav-item" href="https://www.azubiyo.de/bewerbung/download/" target="_blank"> Worauf sollte ich alles achten bei meiner Bewerbung?</a>
 
-<h3>TipsPage</h3>
-
+    </div>
+</div>
 @if (tips.Any())
 {
     @foreach (var tip in tips)
@@ -16,6 +20,6 @@
 }
 else
 {
-    <p>Laden...</p>
+    <p></p>
 }
 

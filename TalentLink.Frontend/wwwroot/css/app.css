@@ -1,5 +1,11 @@
 html, body {
+    margin: 0;
+    padding: 0;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 h1:focus {
@@ -7,8 +13,14 @@ h1:focus {
 }
 
 a, .btn-link {
-    color: #0071c1;
+    color: #000000;
+    text-decoration: none;
 }
+
+    a:hover {
+        color: #000000;
+        text-decoration: underline;
+    }
 
 .btn-primary {
     color: #fff;
@@ -128,7 +140,12 @@ article.content {
 
 footer, .footer {
     flex-shrink: 0;
+    margin-top: 0;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
+
 .flex {
     display: flex;
     min-height: 0;
@@ -137,10 +154,12 @@ footer, .footer {
 
 .sidebar {
     width: 220px;
-    min-width: 180px;
+    min-width: 0;
+    max-width: 100vw;
     background: #f8f9fa !important;
     border-right: 1px solid #e0e0e0;
     padding: 1.5rem 1rem;
+    box-sizing: border-box;
 }
 
 .content {
@@ -207,22 +226,51 @@ footer, .footer {
     padding-right: 0;
 }
 
+.tips-bg {
+    min-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    background: linear-gradient(90deg, #e3f6fc 0%, #b3e0f7 100%);
+    padding: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-x: hidden;
+}
+
+    .tips-bg .container {
+        width: 100%;
+        max-width: 100vw;
+        margin: 0;
+        padding: 0 1rem;
+        box-sizing: border-box;
+    }
+
+/* --- Home Features Responsive & Visual Improvements --- */
+
 .home-row {
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    width: 100vw;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     min-height: 400px;
+    box-sizing: border-box;
 }
 
 .hero {
     flex: 1 1 50%;
-    padding: 3rem 2rem 3rem 4vw;
+    padding: 3rem 2rem 3rem 3vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
     background: #fff;
-    min-width: 320px;
+    min-width: 280px;
+    box-sizing: border-box;
+    border-radius: 1.5rem 0 0 1.5rem;
 }
 
 .features {
@@ -231,21 +279,67 @@ footer, .footer {
     flex-direction: column;
     justify-content: center;
     gap: 2rem;
-    min-width: 320px;
+    min-width: 280px;
+    box-sizing: border-box;
+    border-radius: 0 1.5rem 1.5rem 0;
 }
 
 .features-bg {
-    background: linear-gradient(90deg, #e3f6fc 0%, #f8fafc 100%);
-    padding: 3rem 4vw 3rem 2rem;
+    background: linear-gradient(90deg, #e3f6fc 0%, #b3e0f7 100%);
+    padding: 3rem 3vw 3rem 2rem;
+    box-sizing: border-box;
+}
+
+.features .feature {
+    background: rgba(255,255,255,0.85);
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    padding: 1.5rem 1.2rem;
+    margin: 0 0.5rem;
 }
 
 @media (max-width: 900px) {
     .home-row {
         flex-direction: column;
         width: 100%;
+        max-width: 100vw;
+        margin: 0;
+        border-radius: 0;
     }
+
     .features, .hero {
         min-width: 0;
         padding: 2rem 1rem;
+        border-radius: 0;
     }
+
+        .features .feature {
+            margin: 0 0 1.2rem 0;
+        }
+
+    .tips-bg, .tips-bg .container, .footer {
+        width: 100vw;
+        max-width: 100vw;
+        padding: 0 0.5rem;
+    }
+
+    .sidebar {
+        width: 100vw;
+        max-width: 100vw;
+        padding: 1rem 0.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .home-row {
+        min-height: unset;
+    }
+
+    .features, .hero {
+        padding: 1.2rem 0.5rem;
+    }
+
+        .features .feature {
+            padding: 1rem 0.5rem;
+        }
 }

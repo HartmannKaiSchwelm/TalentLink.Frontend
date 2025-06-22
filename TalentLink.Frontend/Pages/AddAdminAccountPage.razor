@@ -1,0 +1,33 @@
+﻿@page "/addadmin"
+@using TalentLink.Frontend.Models
+@inject HttpClient httpclient
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+
+<h3>AddAdminAccountPage</h3>
+@if (AuthService.Role == "Admin")
+{
+    <form>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" @bind="@user.Name" class="form-control" required />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" @bind="@user.Email" class="form-control" required />
+        </div>
+        <div class="form-group mb-3">
+            <label for="password">Password</label>
+            <input type="password" id="password" @bind="@user.Password" class="form-control" required />
+        </div>
+        <button type="button" @onclick="@Register" class="btn btn-primary">Register</button>
+    </form>
+}
+else
+{
+    <p>Only admins can create new admin accounts.</p>
+}
+
+@code {
+
+}
