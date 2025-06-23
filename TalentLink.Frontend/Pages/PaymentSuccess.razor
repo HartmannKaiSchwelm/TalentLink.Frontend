@@ -1,7 +1,19 @@
 ﻿@page "/paymentsuccess"
 
-<h3>PaymentSuccess</h3>
-<p> well done</p>
-@code {
+<div class="payment-success-container">
+    <div class="payment-success-icon">
+        <svg width="64" height="64" fill="none" viewBox="0 0 64 64">
+            <circle cx="32" cy="32" r="32" fill="#4BB543"/>
+            <path d="M18 34l10 10 18-18" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <h2 class="payment-success-title">Zahlung erfolgreich!</h2>
+    <p class="payment-success-message">
+        Vielen Dank für Ihre Zahlung.<br />
+        Ihre Transaktion wurde erfolgreich abgeschlossen.
+    </p>
+    <a href="/" class="btn btn-primary payment-success-btn">Zurück zur Startseite</a>
+</div>
 
+@code {
 }

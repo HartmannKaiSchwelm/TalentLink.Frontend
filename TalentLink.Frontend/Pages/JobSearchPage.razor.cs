@@ -6,15 +6,16 @@ namespace TalentLink.Frontend.Pages
 {
     public partial class JobSearchPage
     {
+        [Inject] private ApiConfig ApiConfig { get; set; } = default!;
         [Parameter]
         public Guid jobId { get; set; }
-        private List<Job> jobs = new();
+        private List<JobListItemDto> jobs = new();
         private List<JobCategory> categories = new();
         private string catUID = string.Empty;
         private bool isLoading = false;
         private string errorMessage = string.Empty;
         private string notAuthenticatedMessage = string.Empty;
-        private bool showNotAuthenticatedModal = false; 
+        private bool showNotAuthenticatedModal = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -63,15 +64,15 @@ namespace TalentLink.Frontend.Pages
                 var response = await HttpClient.GetAsync("https://localhost:7024/api/Job");
                 if (response.IsSuccessStatusCode)
                 {
-                    var allJobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
+                    var allJobs = await response.Content.ReadFromJsonAsync<List<JobListItemDto>>() ?? new List<JobListItemDto>();
                     // Boosted zuerst, dann nach CreatedAt, nur bezahlte Jobs
-                    jobs = allJobs.Where(j => j.IsPaid)
+                    jobs = allJobs.Where(j => j.IsPaid && !j.IsAssigned)
                         .OrderByDescending(j => j.IsBoosted)
                         .ThenByDescending(j => j.CreatedAt)
                         .ToList();
                     if (!jobs.Any())
                     {
-                        errorMessage = "No jobs returned from the API.";
+                        errorMessage = "Keine Jobs gefunden";
                     }
                 }
                 else
@@ -82,7 +83,7 @@ namespace TalentLink.Frontend.Pages
             catch (Exception ex)
             {
                 errorMessage = $"Error fetching jobs: {ex.Message}";
-                jobs = new List<Job>();
+                jobs = new List<JobListItemDto>();
             }
             finally
             {
@@ -109,9 +110,9 @@ namespace TalentLink.Frontend.Pages
                 var response = await HttpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
-                    var allJobs = await response.Content.ReadFromJsonAsync<List<Job>>() ?? new List<Job>();
-                    // Boosted zuerst, dann nach CreatedAt, nur bezahlte Jobs
-                    jobs = allJobs.Where(j => j.IsPaid)
+                    var allJobs = await response.Content.ReadFromJsonAsync<List<JobListItemDto>>() ?? new List<JobListItemDto>();
+                    // Boosted zuerst, dann nach CreatedAt, nur bezahlte Jobs und nicht vergebene
+                    jobs = allJobs.Where(j => j.IsPaid && !j.IsAssigned)
                         .OrderByDescending(j => j.IsBoosted)
                         .ThenByDescending(j => j.CreatedAt)
                         .ToList();
@@ -128,7 +129,7 @@ namespace TalentLink.Frontend.Pages
             catch (Exception ex)
             {
                 errorMessage = $"Error fetching jobs: {ex.Message}";
-                jobs = new List<Job>();
+                jobs = new List<JobListItemDto>();
             }
             finally
             {
@@ -136,7 +137,7 @@ namespace TalentLink.Frontend.Pages
                 StateHasChanged();
             }
         }
-        
+
         public void ApplyTo(Guid jobId)
         {
             if (AuthService.VerifiedByParentId != null)
@@ -146,7 +147,7 @@ namespace TalentLink.Frontend.Pages
             else
             {
                 notAuthenticatedMessage = "Deine Eltern haben dich nicht für die Bewerbung freigeschaltet. Bitte kontaktiere sie, um deine Bewerbung zu starten";
-                showNotAuthenticatedModal = true; 
+                showNotAuthenticatedModal = true;
             }
         }
     }

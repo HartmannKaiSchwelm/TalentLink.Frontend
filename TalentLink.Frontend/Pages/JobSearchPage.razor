@@ -7,12 +7,12 @@
 <h3 class="text-center">Job Search</h3>
 
 <div class="text-center">
-    <label>Choose a category:</label>
+    <label>Wähle eine Kategorie:</label>
     <select @onchange="OnCategoryChanged">
-        <option value="">All Categories</option>
+        <option value="">Alle Kategorien</option>
         @if (categories == null || !categories.Any())
         {
-            <option disabled>No categories available</option>
+            <option disabled>Keine Kategorien verfügbar</option>
         }
         else
         {
@@ -32,7 +32,7 @@
 }
 else if (jobs == null || !jobs.Any())
 {
-    <p>No jobs found.</p>
+    <p>keine Jobs gefunden.</p>
 }
 else
 {

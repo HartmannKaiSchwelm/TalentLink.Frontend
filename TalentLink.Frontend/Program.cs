@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TalentLink.Frontend.Services;
 using Blazored.LocalStorage;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace TalentLink.Frontend
 {
@@ -21,6 +23,13 @@ namespace TalentLink.Frontend
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
                 DefaultRequestHeaders = { /* ... */ }
             });
+
+            // ApiConfig laden
+            using var http = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+            var configJson = await http.GetStringAsync("appsettings.json");
+            var config = JsonSerializer.Deserialize<ApiConfig>(configJson);
+            builder.Services.AddSingleton(config ?? new ApiConfig());
+
             var host = builder.Build();
             var authService = host.Services.GetRequiredService<AuthenticationService>();
             await authService.TryRestoreAuthAsync();
