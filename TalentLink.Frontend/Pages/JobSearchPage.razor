@@ -52,12 +52,12 @@ else
                                 @job.Title
                                 @if (job.IsBoosted)
                                 {
-                                    <span class="badge bg-warning text-dark ms-2">Boosted</span>
+                                    <span class="badge bg-warning text-dark ms-2">Hevorgehoben</span>
                                 }
                             </h5>
                             <p class="job-category">@job.Category</p>
                             <p class="job-date mb-3">Erstellt: @job.CreatedAt.ToString("dd.MM.yyyy")</p>
-                            <span class=""><button class="btn btn-primary" @onclick="() => ApplyTo(job.Id)">Apply</button></span>
+                            <span class=""><button class="btn btn-primary" @onclick="() => ApplyTo(job.Id)">Bewirb dich!</button></span>
                         </div>
                     </div>
                 </div>

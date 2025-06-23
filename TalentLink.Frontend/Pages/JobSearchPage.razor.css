@@ -22,7 +22,7 @@
     height: 200px; 
     overflow: hidden; 
     background: #c6cccf;
-    background: linear-gradient(23deg, #c6cccf 13%, #53c1ed 100%);
+    background: linear-gradient(23deg, #e3f6fc 13%, #0482fb 100%);
     display: flex;
     align-items: center; 
     justify-content: center; 
