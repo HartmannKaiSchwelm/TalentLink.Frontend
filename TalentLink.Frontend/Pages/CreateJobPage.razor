@@ -11,7 +11,10 @@
         <EditForm Model="@newJob" OnValidSubmit="CreateJob">
             <InputText @bind-Value="newJob.Title" class="form-control mb-2" placeholder="Job Title" />
             <InputTextArea @bind-Value="newJob.Description" class="form-control mb-2" placeholder="Beschreibung" />
-            <InputNumber @bind-Value="newJob.PricePerHour" class="form-control mb-2" placeholder="Preis pro Stunde" />
+            <label for="price">Stundenlohn</label>
+            <InputNumber id="price" @bind-Value="newJob.PricePerHour" class="form-control mb-2" placeholder="Preis pro Stunde" />
+            <label for="alter">Alter</label>            
+            <InputNumber id="alter" @bind-Value="newJob.MinimumAge" class="form-control mb-2" placeholder="Mindestalter"/>
             <div class="mb-2">
                 <label>Kategorie</label>
                 <InputSelect @bind-Value="selectedCategoryId" class="form-control">

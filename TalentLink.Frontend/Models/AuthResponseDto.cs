@@ -7,6 +7,9 @@
         public string Name { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty; 
         public string Email { get; set; } = string.Empty;
+
+        public string? ZipCode { get; set; } = null; 
+        public string? City { get; set; } = null;
         public Guid? VerifiedByParentId { get; set; } = null; 
         // Entferne UserId, nutze Id
         public ICollection<Job> CreatedJobs { get; set; } = new List<Job>();

@@ -27,12 +27,14 @@ namespace TalentLink.Frontend.Services
 
         // NEU: Zeigt an, ob Authentifizierung geladen wurde
         public bool IsAuthLoaded { get; private set; } = false;
+        public string? ZipCode { get; set; } // NEU: ZipCode Property
+        public string? City { get; set; }
 
         public AuthenticationService(ILocalStorageService localStorage)
         {
             _localStorage = localStorage;
         }
-        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job> createdJobs, Guid? verifiedByParentId, Guid id)
+        public async Task SetAuthAsync(string token, string? userName, string? role, string email, ICollection<Job> createdJobs, Guid? verifiedByParentId, Guid id, string? zipCode, string? city)
         {
             Token = token;
             UserName = userName;
@@ -41,6 +43,8 @@ namespace TalentLink.Frontend.Services
             CreatedJobs = createdJobs;
             VerifiedByParentId = verifiedByParentId;
             UserId = id;
+            ZipCode = zipCode;
+            City = city;
 
             IsAuthenticated = true;
             await _localStorage.SetItemAsync("auth_token", token);
@@ -50,6 +54,8 @@ namespace TalentLink.Frontend.Services
             await _localStorage.SetItemAsync("auth_createdJobs", createdJobs);
             await _localStorage.SetItemAsync("auth_verifiedByParentId", verifiedByParentId);
             await _localStorage.SetItemAsync("auth_userId", id);
+            await _localStorage.SetItemAsync("auth_zipCode", zipCode); // ZipCode speichern
+            await _localStorage.SetItemAsync("auth_city", city);
             OnAuthStateChanged?.Invoke();
         }
         public Task AuthLoadedTask => _authLoadedTcs.Task;
@@ -62,6 +68,8 @@ namespace TalentLink.Frontend.Services
             Role = await _localStorage.GetItemAsync<string>("auth_role");
             Email = await _localStorage.GetItemAsync<string>("auth_email");
             CreatedJobs = await _localStorage.GetItemAsync<ICollection<Job>>("auth_createdJobs");
+            ZipCode = await _localStorage.GetItemAsync<string>("auth_zipCode");
+            City = await _localStorage.GetItemAsync<string>("auth_city");
 
             // Sicheres Parsen für optionale Guids
             var verifiedByParentIdStr = await _localStorage.GetItemAsync<string>("auth_verifiedByParentId");
@@ -96,6 +104,8 @@ namespace TalentLink.Frontend.Services
             await _localStorage.RemoveItemAsync("auth_createdJobs");
             await _localStorage.RemoveItemAsync("auth_verifiedByParentId");
             await _localStorage.RemoveItemAsync("auth_userId");
+            await _localStorage.RemoveItemAsync("auth_zipCode"); // ZipCode entfernen
+            await _localStorage.RemoveItemAsync("auth_city");
             OnAuthStateChanged?.Invoke();
         }
 

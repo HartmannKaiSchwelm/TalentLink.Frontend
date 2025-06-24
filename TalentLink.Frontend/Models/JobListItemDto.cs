@@ -7,6 +7,7 @@
         public decimal PricePerHour { get; set; }
         public bool IsBoosted { get; set; }
 
+        public string ZipCode { get; set; }
         public bool IsAssigned { get; set; }
         public bool IsPaid { get; set; }
         public DateTime CreatedAt { get; set; }

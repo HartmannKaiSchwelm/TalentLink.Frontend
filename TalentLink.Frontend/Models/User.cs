@@ -6,7 +6,7 @@
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public DateOnly Birthday { get; set;  }
+        
         public UserRole Role { get; set; }
     }
 
@@ -20,6 +20,7 @@
     public class Student : User
     {
         public Guid? VerifiedByParentId { get; set; }
+        public DateOnly DateOfBirth { get; set;  }
     }
 
     public class Senior : User

@@ -13,5 +13,6 @@
         public Guid CreatedById { get; set; }
         public bool IsAssigned { get; set; } = false; 
         public bool IsPaid {get; set;} = false; 
+        public string? ZipCode { get; set; } = null!;
     }
 }

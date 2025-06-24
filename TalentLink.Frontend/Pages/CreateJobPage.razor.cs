@@ -12,6 +12,7 @@ namespace TalentLink.Frontend.Pages
         private Guid? selectedCategoryId;
         private string? successMessage;
         private string? errorMessage;
+        private int MinimumAge { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -93,6 +94,10 @@ namespace TalentLink.Frontend.Pages
                     return;
                 }
                 newJob.CreatedById = userId.Value; // Verwende userId statt AuthService.UserId
+                Console.WriteLine($"AuthService.ZipCode: '{AuthService.ZipCode}'");
+                newJob.ZipCode = AuthService.ZipCode;
+                newJob.City = AuthService.City;
+              
                 Console.WriteLine($"Set CreatedById to: {newJob.CreatedById}");
             }
             catch (Exception ex)
@@ -133,7 +138,7 @@ namespace TalentLink.Frontend.Pages
                                     jobId = createdJob.Id,
                                     amount = 499,
                                     successUrl = $"{Navi.BaseUri}paymentsuccess",
-                                    cancelUrl = $"{Navi.BaseUri}payment/cancel"
+                                    cancelUrl = $"{Navi.BaseUri}paymentcancel"
                                 })
                             };
 

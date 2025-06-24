@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using TalentLink.Frontend.Models;
 using TalentLink.Frontend.Services;
@@ -18,16 +19,19 @@ namespace TalentLink.Frontend.Pages
                 var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();
                 if (auth is not null)
                 {
-                    await AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs, auth.VerifiedByParentId, auth.Id);
+                    HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", auth.Token);
+
+                    await AuthService.SetAuthAsync(auth.Token, auth.Name, auth.Role, auth.Email, auth.CreatedJobs, auth.VerifiedByParentId, auth.Id, auth.ZipCode, auth.City);
                 }
                 if (AuthService.Role == "Admin")
                 {
                     Navi.NavigateTo("/admindashboard");
                 }
-                else {
+                else
+                {
                     Navi.NavigateTo("/profile");
                 }
-                    
+
             }
             else
             {

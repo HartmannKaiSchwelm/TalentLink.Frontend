@@ -10,7 +10,7 @@
         public string? ZipCode { get; set; } = null!;
         public string? City { get; set; } = null!; 
 
-        public DateOnly Birthday { get; set;  }
+        public DateOnly? DateOfBirth { get; set;  }
         public string? StudentEmail { get; set; }
 
     }
