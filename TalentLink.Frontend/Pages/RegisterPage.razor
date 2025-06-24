@@ -33,7 +33,18 @@
         <label for="email">Email</label>
         <input type="email" id="email" @bind="@user.Email" class="form-control" required />
     </div>
-    @if (user.Role == 2)
+            @if (user.Role == 1)
+            {
+                <div class="form-group">
+                    <label for="plz">Postleitzahl:</label>
+                    <input type="text" id="plz" @bind="@user.ZipCode" class="form-control" required/>
+                </div>
+                <div class="form-group">
+                    <label for="ort">Ort:</label>
+                    <input type="text" id="ort" @bind="@user.City" class="form-control" required />
+                </div>
+            }
+            @if (user.Role == 2)
     {
         <div class="form-group">
             <label for="studentEmail">E-Mail Ihres Kindes</label>

@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Components;
+using System.Net.Http.Json;
 using TalentLink.Frontend.Models;
 
 namespace TalentLink.Frontend.Pages
@@ -7,7 +8,8 @@ namespace TalentLink.Frontend.Pages
     {
         private UserRegisterDto user = new UserRegisterDto();
         private string message;
-        private string errorMessage; 
+        private string errorMessage;
+        [Inject] private NavigationManager Navi { get; set; } = default!; 
 
         private async Task Register()
         {
@@ -27,6 +29,12 @@ namespace TalentLink.Frontend.Pages
             message = null;
             errorMessage = null;
             StateHasChanged();
+
+            //go-to-login
+            if (response.IsSuccessStatusCode)
+            {
+                Navi.NavigateTo("/login");
+            }
         }
 
        

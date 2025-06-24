@@ -17,6 +17,10 @@ namespace TalentLink.Frontend.Pages
         private string notAuthenticatedMessage = string.Empty;
         private bool showNotAuthenticatedModal = false;
 
+        //Search-props
+        private string searchLocation = "";
+        private int searchRadius = 5;
+
         protected override async Task OnInitializedAsync()
         {
             await LoadCategories();
@@ -150,5 +154,25 @@ namespace TalentLink.Frontend.Pages
                 showNotAuthenticatedModal = true;
             }
         }
+        public async Task<(double lat, double lng)?> GetCoordinatesAsync(string ort)
+        {
+            var response = await HttpClient.GetAsync($"https://localhost:7024/api/geocode?query={Uri.EscapeDataString(ort)}");
+            if (!response.IsSuccessStatusCode) return null;
+            var coords = await response.Content.ReadFromJsonAsync<GeoResult>();
+            return (coords.Lat, coords.Lng);
+        }
+        private async Task SearchJobsByLocation()
+        {
+            var coords = await GetCoordinatesAsync(searchLocation);
+            if (coords == null)
+            {
+                errorMessage = "Ort konnte nicht gefunden werden.";
+                return; 
+            }
+            var (lat, lng) = coords.Value;
+            var url = $"https://localhost:7024/api/job/search?latitude={lat}&longitude={lng}&radiusKm={searchRadius}";
+            jobs = await HttpClient.GetFromJsonAsync<List<JobListItemDto>>(url) ?? new();
+        }
+    
     }
 }
