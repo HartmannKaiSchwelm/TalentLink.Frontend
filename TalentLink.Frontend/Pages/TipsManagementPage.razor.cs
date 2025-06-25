@@ -21,7 +21,7 @@ namespace TalentLink.Frontend.Pages
         {
             try
             {
-                var response = await Httpclient.GetAsync("https://localhost:7024/api/Tips");
+                var response = await Httpclient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/Tips");
                 response.EnsureSuccessStatusCode();
                 var fetchedTips = await response.Content.ReadFromJsonAsync<List<Tip>>();
                 if (fetchedTips != null)
@@ -53,7 +53,7 @@ namespace TalentLink.Frontend.Pages
                     Httpclient.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
                 }
-                var response = await Httpclient.DeleteAsync($"https://localhost:7024/api/Tips/{id}");
+                var response = await Httpclient.DeleteAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/Tips/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     var tipToRemove = tips.FirstOrDefault(t => t.Id == id);
@@ -117,7 +117,7 @@ namespace TalentLink.Frontend.Pages
                 Httpclient.DefaultRequestHeaders.Authorization =
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
             }
-            var response = await Httpclient.PutAsJsonAsync($"https://localhost:7024/api/Tips/{editTip.Id}", updateDto);
+            var response = await Httpclient.PutAsJsonAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/Tips/{editTip.Id}", updateDto);
             if (response.IsSuccessStatusCode)
             {
                 var idx = tips.FindIndex(t => t.Id == editTip.Id);
@@ -169,7 +169,7 @@ namespace TalentLink.Frontend.Pages
                     Httpclient.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
                 }
-                var response = await Httpclient.PostAsJsonAsync("https://localhost:7024/api/Tips", newTip);
+                var response = await Httpclient.PostAsJsonAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/Tips", newTip);
                 if (response.IsSuccessStatusCode)
                 {
                     var created = await response.Content.ReadFromJsonAsync<Tip>();

@@ -25,7 +25,7 @@ namespace TalentLink.Frontend.Pages
             loadingJobs = true;
             try
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Job/created-by-me");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://talentlink-9aef45cf7016.herokuapp.com/api/Job/created-by-me");
                 if (!string.IsNullOrEmpty(AuthService.Token))
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -50,7 +50,7 @@ namespace TalentLink.Frontend.Pages
             jobApplicationCounts.Clear();
             foreach (var job in createdJobs)
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7024/api/Job/{job.Id}/applications");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"https://talentlink-9aef45cf7016.herokuapp.com/api/Job/{job.Id}/applications");
                 if (!string.IsNullOrEmpty(AuthService.Token))
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -80,7 +80,7 @@ namespace TalentLink.Frontend.Pages
         {
             if (AuthService.Role == "Student")
             {
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/Application/mine");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://talentlink-9aef45cf7016.herokuapp.com/api/Application/mine");
                 if (!string.IsNullOrEmpty(AuthService.Token))
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -103,7 +103,7 @@ namespace TalentLink.Frontend.Pages
 
         async Task CancelApplication(Guid applicationId)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://localhost:7024/api/Application/{applicationId}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"https://talentlink-9aef45cf7016.herokuapp.com/api/Application/{applicationId}");
             if (!string.IsNullOrEmpty(AuthService.Token))
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);

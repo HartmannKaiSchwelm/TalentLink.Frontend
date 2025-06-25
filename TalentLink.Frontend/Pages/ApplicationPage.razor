@@ -13,6 +13,7 @@ else
     <p>Kategorie: @job.Category</p>
     <p>Preis pro Stunde: @job.PricePerHour €</p>
     <!-- Bewerbungsformular hier -->
+    <p> Bitte denke daran in der Nachricht deine Mobilfunknummer anzugeben für die weitere Kommunikation</p>
     <EditForm Model="@application" OnValidSubmit="SubmitApplication">
         <InputTextArea @bind-Value="application.Message" class="form-control" placeholder="Nachricht an den Anbieter (optional)" />
         <button class="btn btn-primary mt-2" type="submit">Bewerben</button>

@@ -74,7 +74,7 @@ else
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationService.Token);
             }
 
-            userData = await HttpClient.GetFromJsonAsync<AdminDashboardDto>($"{_apiConfig.BaseUrl}/api/Admin/dashboard");
+            userData = await HttpClient.GetFromJsonAsync<AdminDashboardDto>("https://talentlink-9aef45cf7016.herokuapp.com/api/Admin/dashboard");
         }
         catch
         {

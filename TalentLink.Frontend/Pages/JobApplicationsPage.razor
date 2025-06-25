@@ -4,7 +4,7 @@
 @inject NavigationManager Navi
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
 
-<h4>Bewerbungen für diesen Job</h4>
+<h4>Bewerbungen fï¿½r diesen Job</h4>
 @if (job == null)
 {
     <div>Lade Jobdaten...</div>
@@ -15,7 +15,7 @@ else
         <h5>@job.Title</h5>
         <div>@job.Description</div>
         <div>Kategorie: @job.Category</div>
-        <div>Preis pro Stunde: @job.PricePerHour €</div>
+        <div>Preis pro Stunde: @job.PricePerHour ï¿½</div>
     </div>
     <h5>Bewerbungen:</h5>
     @if (applications == null)
@@ -63,9 +63,9 @@ else
     private async Task LoadJobAndApplications()
     {
         // Jobdetails laden
-        job = await HttpClient.GetFromJsonAsync<Job>($"https://localhost:7024/api/Job/{jobId}");
+        job = await HttpClient.GetFromJsonAsync<Job>($"https://talentlink-9aef45cf7016.herokuapp.com/api/Job/{jobId}");
         // Bewerbungen laden
-        var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:7024/api/Job/{jobId}/applications");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://talentlink-9aef45cf7016.herokuapp.com/api/Job/{jobId}/applications");
         if (!string.IsNullOrEmpty(AuthService.Token))
         {
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -83,7 +83,7 @@ else
 
     private async Task UpdateStatus(Guid applicationId, ApplicationStatus status)
     {
-        var request = new HttpRequestMessage(HttpMethod.Patch, $"https://localhost:7024/api/Application/{applicationId}/status?status={status}");
+        var request = new HttpRequestMessage(HttpMethod.Patch, $"https://talentlink-9aef45cf7016.herokuapp.com/api/Application/{applicationId}/status?status={status}");
         if (!string.IsNullOrEmpty(AuthService.Token))
         {
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);

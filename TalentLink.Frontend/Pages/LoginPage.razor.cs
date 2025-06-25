@@ -13,7 +13,7 @@ namespace TalentLink.Frontend.Pages
 
         private async Task LoginUser()
         {
-            var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/auth/login", login);
+            var response = await HttpClient.PostAsJsonAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/auth/login", login);
             if (response.IsSuccessStatusCode)
             {
                 var auth = await response.Content.ReadFromJsonAsync<AuthResponseDto>();

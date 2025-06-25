@@ -2,9 +2,7 @@
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
 @using TalentLink.Frontend.Models
-@inject TalentLink.Frontend.Services.AuthenticationService AuthService
 
-@if(AuthService.Role == "Admin"){
 <PageTitle>FAQ Bearbeiten</PageTitle>
 
 <div class="container mt-4">
@@ -141,11 +139,7 @@
         </div>
     </div>
 </div>
-}
-else
-{
-    <div class="alert alert-danger">Zugriff verweigert. Nur Admins können diese Seite aufrufen.</div>
-}
+
 @code {
     private List<FaqItem>? faqItems;
     private bool showModal = false;
@@ -156,6 +150,8 @@ else
     private string? alertMessage;
     private string alertClass = "";
 
+    // Diese Zeile ENTFERNEN:
+    // private object currentItem => isEditing ? currentUpdateItem : currentCreateItem;
 
     protected override async Task OnInitializedAsync()
     {
@@ -166,7 +162,7 @@ else
     {
         try
         {
-            var response = await HttpClient.GetAsync("https://localhost:7024/api/FaqItems");
+            var response = await HttpClient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/FaqItems");
             if (response.IsSuccessStatusCode)
             {
                 faqItems = await response.Content.ReadFromJsonAsync<List<FaqItem>>();
@@ -217,11 +213,11 @@ else
             
             if (isEditing)
             {
-                response = await HttpClient.PutAsJsonAsync($"https://localhost:7024/api/FaqItems/{editingId}", currentUpdateItem);
+                response = await HttpClient.PutAsJsonAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/FaqItems/{editingId}", currentUpdateItem);
             }
             else
             {
-                response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/FaqItems", currentCreateItem);
+                response = await HttpClient.PostAsJsonAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/FaqItems", currentCreateItem);
             }
 
             if (response.IsSuccessStatusCode)
@@ -247,7 +243,7 @@ else
         {
             try
             {
-                var response = await HttpClient.DeleteAsync($"https://localhost:7024/api/FaqItems/{id}");
+                var response = await HttpClient.DeleteAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/FaqItems/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     ShowAlert("FAQ erfolgreich gelöscht!", "alert-success");

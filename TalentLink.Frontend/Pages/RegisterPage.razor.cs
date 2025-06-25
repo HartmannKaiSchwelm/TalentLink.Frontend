@@ -13,7 +13,7 @@ namespace TalentLink.Frontend.Pages
 
         private async Task Register()
         {
-            var response = await HttpClient.PostAsJsonAsync("https://localhost:7024/api/Auth/register", user);
+            var response = await HttpClient.PostAsJsonAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/Auth/register", user);
 
             if (response.IsSuccessStatusCode)
             {

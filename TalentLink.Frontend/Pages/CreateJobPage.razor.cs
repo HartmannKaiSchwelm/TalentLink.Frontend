@@ -23,7 +23,7 @@ namespace TalentLink.Frontend.Pages
             try
             {
                 // Debug: Zeige die rohe Antwort der Categories API
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/categories");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://talentlink-9aef45cf7016.herokuapp.com/api/categories");
                 if (!string.IsNullOrEmpty(AuthService.Token))
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -110,7 +110,7 @@ namespace TalentLink.Frontend.Pages
             try
             {
                 Console.WriteLine("=== Sending CreateJob Request ===");
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/Job")
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://talentlink-9aef45cf7016.herokuapp.com/api/Job")
                 {
                     Content = JsonContent.Create(newJob)
                 };
@@ -131,7 +131,7 @@ namespace TalentLink.Frontend.Pages
                         // Stripe-Session anfordern - mit besserer Fehlerbehandlung
                         try
                         {
-                            var stripeRequest = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/payment/create-session")
+                            var stripeRequest = new HttpRequestMessage(HttpMethod.Post, "https://talentlink-9aef45cf7016.herokuapp.com/api/payment/create-session")
                             {
                                 Content = JsonContent.Create(new
                                 {
