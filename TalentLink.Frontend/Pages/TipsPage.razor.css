@@ -1,0 +1,123 @@
+.tips-bg {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.tips-bg h3 {
+    color: #1d1d1f;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.nav-item {
+    display: inline-block;
+    background: linear-gradient(135deg, #007aff, #5856d6);
+    color: white;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+}
+
+.nav-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 122, 255, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.tip-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.tip-card h4 {
+    color: #1d1d1f;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.3;
+}
+
+.tip-card p {
+    color: #86868b;
+    line-height: 1.6;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .tips-bg {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .tips-bg h3 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    .nav-item {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .tip-card {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .tip-card h4 {
+        font-size: 1.1rem;
+    }
+    
+    .tip-card p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .tips-bg {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    
+    .tips-bg h3 {
+        font-size: 1.1rem;
+    }
+    
+    .tip-card {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+    
+    .nav-item {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+}

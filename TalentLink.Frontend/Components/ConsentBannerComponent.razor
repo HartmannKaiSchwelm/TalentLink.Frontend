@@ -2,8 +2,8 @@
 
 @if (showBanner)
 {
-    <div class="modal-blur-backdrop"></div>
-    <div class="modal show d-block custom-modal-center" tabindex="-1">
+    <div class="modal-blur-backdrop" style="z-index: 20000; position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: block !important;"></div>
+    <div class="modal show d-block custom-modal-center" tabindex="-1" style="z-index: 21000; display: block !important; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,8 +27,18 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var consent = await LocalStorage.GetItemAsync<bool>("cookie_consent");
-        showBanner = !consent;
+        try
+        {
+            var consent = await LocalStorage.GetItemAsync<bool>("cookie_consent");
+            Console.WriteLine($"[ConsentBannerComponent] cookie_consent in localStorage: {consent}");
+            showBanner = !consent;
+            Console.WriteLine($"[ConsentBannerComponent] showBanner: {showBanner}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ConsentBannerComponent] Fehler beim Zugriff auf LocalStorage: {ex.Message}");
+            showBanner = true;
+        }
     }
 
     private async Task Accept()

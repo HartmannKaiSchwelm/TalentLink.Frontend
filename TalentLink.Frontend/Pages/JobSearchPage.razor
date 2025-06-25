@@ -6,30 +6,43 @@
 
 <h3 class="text-center">Job Suche</h3>
 
-<div class="text-center">
-    <label>Wähle eine Kategorie:</label>
-    <select @onchange="OnCategoryChanged">
-        <option value="">Alle Kategorien</option>
-        @if (categories == null || !categories.Any())
-        {
-            <option disabled>Keine Kategorien verfügbar</option>
-        }
-        else
-        {
-            @foreach (var category in categories)
-            {
-                <option value="@category.Id">@category.Name</option>
-            }
-        }
-    </select>
-    <input type="text" @bind="searchLocation" placeholder="Dein Wohnort" />
-    <select @bind="searchRadius">
-        <option value="5">+ 5 Km</option>
-        <option value="10">+ 10 km</option>
-        <option value="15">+ 15 km</option>
+<div class="filter-container">
+    <div class="filter-row">
+        <div class="filter-item">
+            <label>Wähle eine Kategorie:</label>
+            <select @onchange="OnCategoryChanged">
+                <option value="">Alle Kategorien</option>
+                @if (categories == null || !categories.Any())
+                {
+                    <option disabled>Keine Kategorien verfügbar</option>
+                }
+                else
+                {
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </select>
+        </div>
         
-    </select>
-    <button @onclick="SearchJobsByLocation" class="btn btn-primary">Suchen</button>
+        <div class="filter-item">
+            <label>Dein Wohnort:</label>
+            <input type="text" @bind="searchLocation" placeholder="Dein Wohnort" />
+        </div>
+        
+        <div class="filter-item">
+            <label>Umkreis:</label>
+            <select @bind="searchRadius">
+                <option value="5">+ 5 Km</option>
+                <option value="10">+ 10 km</option>
+                <option value="15">+ 15 km</option>
+            </select>
+        </div>
+    </div>
+    <div class="text-center">
+    <button @onclick="SearchJobsByLocation" class="search-button">Suchen</button>
+    </div>
 </div>
 <div class="job-divider my-4"></div>
 

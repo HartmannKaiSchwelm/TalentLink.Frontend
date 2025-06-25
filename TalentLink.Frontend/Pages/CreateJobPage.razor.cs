@@ -136,7 +136,8 @@ namespace TalentLink.Frontend.Pages
                                 Content = JsonContent.Create(new
                                 {
                                     jobId = createdJob.Id,
-                                    amount = 499,
+                                    // amount wird im Backend berechnet, daher entfernen
+                                    isBoost = newJob.IsBoosted, // <--- IsBoosted an das Backend übergeben
                                     successUrl = $"{Navi.BaseUri}paymentsuccess",
                                     cancelUrl = $"{Navi.BaseUri}paymentcancel"
                                 })
@@ -163,7 +164,7 @@ namespace TalentLink.Frontend.Pages
                                 try
                                 {
                                     var stripeSession = await stripeResponse.Content.ReadFromJsonAsync<StripeSessionResponse>();
-                                    if (stripeSession != null && !string.IsNullOrEmpty(stripeSession.Url))
+                                    if (stripeSession != null && !string.IsNullOrEmpty(stripeSession.Url) && stripeSession.Url.StartsWith("http"))
                                     {
                                         await Task.Delay(500);
                                         try {
@@ -178,7 +179,9 @@ namespace TalentLink.Frontend.Pages
                                     }
                                     else
                                     {
-                                        errorMessage = "Stripe-Session URL ist leer oder ungültig.";
+                                        errorMessage = "Stripe-Session URL ist leer oder ungültig. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.";
+                                        Console.WriteLine($"Stripe-Session URL ungültig: {stripeSession?.Url}");
+                                        StateHasChanged();
                                     }
                                 }
                                 catch (Exception ex)

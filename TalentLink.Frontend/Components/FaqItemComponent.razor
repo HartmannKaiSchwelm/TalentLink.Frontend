@@ -1,0 +1,80 @@
+﻿@inject HttpClient HttpClient
+@using TalentLink.Frontend.Models
+
+<div class="faq-section">
+    <div class="text-center mb-5">
+        <h3>Häufig gestellte Fragen</h3>
+
+    </div>
+    
+    
+    <div class="faq-container">
+        @if (faqItems != null && faqItems.Any())
+        {
+            @foreach (var item in faqItems.OrderBy(f => f.OrderPosition))
+            {
+                <div class="faq-item mb-3">
+                    <div class="card">
+                        <div class="card-header" id="heading@(item.Id)">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link w-100 text-start" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse@(item.Id)" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapse@(item.Id)">
+                                    @item.Question
+                                    <i class="fas fa-chevron-down float-end"></i>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapse@(item.Id)" class="collapse" 
+                             aria-labelledby="heading@(item.Id)">
+                            <div class="card-body">
+                                @item.Answer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else if (faqItems != null && !faqItems.Any())
+        {
+            <div class="text-center text-muted">
+                <p>Noch keine FAQ-Einträge vorhanden.</p>
+            </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Laden...</span>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<FaqItem>? faqItems;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadFaqItems();
+    }
+
+    private async Task LoadFaqItems()
+    {
+        try
+        {
+            var response = await HttpClient.GetAsync("https://localhost:7024/api/FaqItems");
+            if (response.IsSuccessStatusCode)
+            {
+                faqItems = await response.Content.ReadFromJsonAsync<List<FaqItem>>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading FAQ items: {ex.Message}");
+        }
+    }
+}

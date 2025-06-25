@@ -50,7 +50,11 @@ else
 @code {
     private AdminDashboardDto? userData;
     private string? error;
-
+    private readonly ApiConfig _apiConfig;
+    public AdminDashboardPage(ApiConfig apiConfig)
+    {
+        _apiConfig = apiConfig;
+    }
     protected override async Task OnInitializedAsync()
     {
         // Warten, bis Auth geladen ist (egal wie lange es dauert)
@@ -70,7 +74,7 @@ else
                     new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationService.Token);
             }
 
-            userData = await HttpClient.GetFromJsonAsync<AdminDashboardDto>("https://localhost:7024/api/Admin/dashboard");
+            userData = await HttpClient.GetFromJsonAsync<AdminDashboardDto>($"{_apiConfig.BaseUrl}/api/Admin/dashboard");
         }
         catch
         {

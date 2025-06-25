@@ -6,6 +6,11 @@ namespace TalentLink.Frontend.Pages
 {
     public partial class ApplicationPage
     {
+        private readonly ApiConfig _apiConfig; 
+        public ApplicationPage(ApiConfig apiConfig)
+        {
+            _apiConfig = apiConfig;
+        }
         [Parameter]
         public Guid jobId { get; set; }
 
@@ -19,7 +24,7 @@ namespace TalentLink.Frontend.Pages
             // Lade Jobdetails anhand der jobId
             try
             {
-                job = await Httpclient.GetFromJsonAsync<Job>($"https://localhost:7024/api/Job/{jobId}");
+                job = await Httpclient.GetFromJsonAsync<Job>($"{_apiConfig.BaseUrl}/api/Job/{jobId}");
                 application.JobId = jobId;
             }
             catch
@@ -37,7 +42,7 @@ namespace TalentLink.Frontend.Pages
                     Httpclient.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
                 }
-                var response = await Httpclient.PostAsJsonAsync($"https://localhost:7024/api/Job/{jobId}/apply", application);
+                var response = await Httpclient.PostAsJsonAsync($"{_apiConfig.BaseUrl}/api/Job/{jobId}/apply", application);
                 if (response.IsSuccessStatusCode)
                 {
                     successMessage = "Bewerbung erfolgreich abgeschickt!";

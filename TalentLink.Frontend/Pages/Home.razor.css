@@ -215,6 +215,12 @@ body {
     margin-top: 2rem;
 }
 
+.section-divider{
+    border: none;
+    border-top: 2px solid #e8e8e8;
+    margin: 3rem 0 2rem 0;
+    width: 100%
+}
 /* Image container with unique aspect ratio */
 .image-container {
     width: 100%;

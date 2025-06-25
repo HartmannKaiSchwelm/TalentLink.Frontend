@@ -1,4 +1,4 @@
-﻿﻿ /* Minimal navigation */
+﻿﻿/* Minimal navigation */
 nav {
     grid-area: nav;
     padding: 1rem 2rem;
@@ -7,10 +7,11 @@ nav {
 
 .nav-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+    position: relative;
 }
 
 .logo {
@@ -18,5 +19,136 @@ nav {
     font-size: 1.2rem;
     color: #1a1a1a;
     text-decoration: none;
+    position: absolute;
+    left: 0;
+}
+
+/* Burger Menu Button - versteckt auf Desktop */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #1a1a1a;
+    position: absolute;
+    right: 0;
+}
+
+/* Navigation Links - zentriert */
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-item {
+    margin: 0;
+}
+
+.nav-item a {
+    text-decoration: none;
+    color: #1a1a1a;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-item a:hover {
+    color: #007bff;
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 768px) {
+    .nav-content {
+        justify-content: space-between;
+    }
+    
+    .logo {
+        position: static;
+    }
+    
+    .menu-toggle {
+        display: block;
+        position: static;
+        z-index: 1001;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background: white;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 4rem 2rem 2rem 2rem;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        gap: 1.5rem;
+        /* WICHTIG: Menü ist standardmäßig versteckt */
+        visibility: hidden;
+        opacity: 0;
+    }
+    
+    .nav-links.open {
+        right: 0;
+        visibility: visible;
+        opacity: 1;
+    }
+    
+    .nav-item {
+        width: 100%;
+    }
+    
+    .nav-item a {
+        display: block;
+        padding: 0.75rem 0;
+        font-size: 1.1rem;
+        border-bottom: 1px solid #f0f0f0;
+        color: #1a1a1a;
+    }
+    
+    .nav-item button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}
+
+/* Tablet */
+@media (max-width: 992px) and (min-width: 769px) {
+    .nav-links {
+        gap: 1rem;
+    }
+    
+    .nav-item a {
+        font-size: 0.9rem;
+    }
+}
+
+/* Overlay für Mobile Menu */
+@media (max-width: 768px) {
+    .container {
+        position: relative;
+    }
+    
+    .nav-links.open::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        pointer-events: none; /* WICHTIG: Overlay soll keine Klicks blockieren */
+    }
 }
 

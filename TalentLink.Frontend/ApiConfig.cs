@@ -2,6 +2,6 @@ namespace TalentLink.Frontend
 {
     public class ApiConfig
     {
-        public string BaseUrl { get; set; } = string.Empty;
+        public string BaseUrl { get; set; } = "https://localhost:7024";
     }
 }

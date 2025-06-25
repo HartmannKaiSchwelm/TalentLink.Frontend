@@ -1,0 +1,308 @@
+﻿@page "/howitworks-edit"
+@using TalentLink.Frontend.Models
+@inject HttpClient Httpclient
+@inject TalentLink.Frontend.Services.AuthenticationService AuthService
+@inject IJSRuntime JSRuntime
+
+@if(AuthService.Role == "Admin"){
+<h3>"Wie es funktioniert" bearbeiten</h3>
+
+<div class="container mt-4">
+    <button class="btn btn-success mb-3" @onclick="ShowCreateModal">
+        <i class="bi bi-plus-circle"></i> Neue Karte hinzufügen
+    </button>
+
+    @if (guideCards != null && guideCards.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Reihenfolge</th>
+                        <th>Typ</th>
+                        <th>Inhalt</th>
+                        <th>Erstellt am</th>
+                        <th>Aktionen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var card in guideCards.OrderBy(c => c.OrderPosition))
+                    {
+                        <tr>
+                            <td>@card.OrderPosition</td>
+                            <td>@card.Type</td>
+                            <td>@(card.Content.Length > 100 ? card.Content.Substring(0, 100) + "..." : card.Content)</td>
+                            <td>@card.CreatedAt.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-2" @onclick="() => ShowEditModal(card)">
+                                    <i class="bi bi-pencil"></i> Bearbeiten
+                                </button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteCard(card.Id)">
+                                    <i class="bi bi-trash"></i> Löschen
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Keine Karten vorhanden. Erstellen Sie die erste Karte!
+        </div>
+    }
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal fade @(showModal ? "show d-block" : "")" tabindex="-1" style="@(showModal ? "background-color: rgba(0,0,0,0.5);" : "display: none;")">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@(isEditMode ? "Karte bearbeiten" : "Neue Karte erstellen")</h5>
+                <button type="button" class="btn-close" @onclick="HideModal"></button>
+            </div>
+            <div class="modal-body">
+                @if (isEditMode)
+                {
+                    <EditForm Model="updateDto" OnValidSubmit="SaveCard">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+                        
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Typ *</label>
+                            <InputText id="type" class="form-control" @bind-Value="updateDto.Type" placeholder="z.B. Schritt 1, Für Studenten, etc." />
+                            <ValidationMessage For="@(() => updateDto.Type)" class="text-danger" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Inhalt *</label>
+                            <InputTextArea id="content" class="form-control" rows="5" @bind-Value="updateDto.Content" placeholder="Beschreibung der Karte..." />
+                            <ValidationMessage For="@(() => updateDto.Content)" class="text-danger" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="orderPosition" class="form-label">Reihenfolge *</label>
+                            <InputNumber id="orderPosition" class="form-control" @bind-Value="updateDto.OrderPosition" min="1" />
+                            <ValidationMessage For="@(() => updateDto.OrderPosition)" class="text-danger" />
+                            <div class="form-text">Niedrigere Zahlen werden zuerst angezeigt</div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="HideModal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                }
+                                Aktualisieren
+                            </button>
+                        </div>
+                    </EditForm>
+                }
+                else
+                {
+                    <EditForm Model="createDto" OnValidSubmit="SaveCard">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+                        
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Typ *</label>
+                            <InputText id="type" class="form-control" @bind-Value="createDto.Type" placeholder="z.B. Schritt 1, Für Studenten, etc." />
+                            <ValidationMessage For="@(() => createDto.Type)" class="text-danger" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Inhalt *</label>
+                            <InputTextArea id="content" class="form-control" rows="5" @bind-Value="createDto.Content" placeholder="Beschreibung der Karte..." />
+                            <ValidationMessage For="@(() => createDto.Content)" class="text-danger" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="orderPosition" class="form-label">Reihenfolge *</label>
+                            <InputNumber id="orderPosition" class="form-control" @bind-Value="createDto.OrderPosition" min="1" />
+                            <ValidationMessage For="@(() => createDto.OrderPosition)" class="text-danger" />
+                            <div class="form-text">Niedrigere Zahlen werden zuerst angezeigt</div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @onclick="HideModal">Abbrechen</button>
+                            <button type="submit" class="btn btn-primary" disabled="@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                }
+                                Erstellen
+                            </button>
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (showAlert)
+{
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+        <div class="alert @(alertType == "success" ? "alert-success" : "alert-danger") alert-dismissible fade show" role="alert">
+            <i class="bi @(alertType == "success" ? "bi-check-circle" : "bi-exclamation-triangle")"></i>
+            @alertMessage
+            <button type="button" class="btn-close" @onclick="HideAlert"></button>
+        </div>
+    </div>
+}
+}
+else{
+    <p>Sie verfügen nicht über die Berechtigung diese Seite zu sehen.</p>
+}
+@code {
+    private List<GuideCard> guideCards = new();
+    private GuideCardCreateDto createDto = new();
+    private GuideCardUpdateDto updateDto = new();
+    private int editingCardId = 0;
+    private bool showModal = false;
+    private bool isEditMode = false;
+    private bool isLoading = false;
+    private bool showAlert = false;
+    private string alertMessage = string.Empty;
+    private string alertType = "success";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGuideCards();
+    }
+
+    private async Task LoadGuideCards()
+    {
+        try
+        {
+            var response = await Httpclient.GetAsync("https://localhost:7024/api/GuideCards");
+            if (response.IsSuccessStatusCode)
+            {
+                var fetchedCards = await response.Content.ReadFromJsonAsync<List<GuideCard>>();
+                if (fetchedCards != null)
+                {
+                    guideCards = fetchedCards;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowAlert($"Fehler beim Laden der Karten: {ex.Message}", "error");
+        }
+    }
+
+    private void ShowCreateModal()
+    {
+        createDto = new GuideCardCreateDto
+        {
+            OrderPosition = guideCards.Any() ? guideCards.Max(c => c.OrderPosition) + 1 : 1
+        };
+        isEditMode = false;
+        showModal = true;
+    }
+
+    private void ShowEditModal(GuideCard card)
+    {
+        updateDto = new GuideCardUpdateDto
+        {
+            Type = card.Type,
+            Content = card.Content,
+            OrderPosition = card.OrderPosition
+        };
+        editingCardId = card.Id;
+        isEditMode = true;
+        showModal = true;
+    }
+
+    private void HideModal()
+    {
+        showModal = false;
+        createDto = new GuideCardCreateDto();
+        updateDto = new GuideCardUpdateDto();
+        editingCardId = 0;
+    }
+
+    private async Task SaveCard()
+    {
+        isLoading = true;
+        try
+        {
+            HttpResponseMessage response;
+            
+            if (isEditMode)
+            {
+                response = await Httpclient.PutAsJsonAsync($"https://localhost:7024/api/GuideCards/{editingCardId}", updateDto);
+            }
+            else
+            {
+                response = await Httpclient.PostAsJsonAsync("https://localhost:7024/api/GuideCards", createDto);
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadGuideCards();
+                HideModal();
+                ShowAlert(isEditMode ? "Karte erfolgreich aktualisiert!" : "Karte erfolgreich erstellt!", "success");
+            }
+            else
+            {
+                ShowAlert($"Fehler beim Speichern: {response.StatusCode}", "error");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowAlert($"Fehler beim Speichern: {ex.Message}", "error");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task DeleteCard(int cardId)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", "Sind Sie sicher, dass Sie diese Karte löschen möchten?");
+        if (!confirmed) return;
+
+        try
+        {
+            var response = await Httpclient.DeleteAsync($"https://localhost:7024/api/GuideCards/{cardId}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadGuideCards();
+                ShowAlert("Karte erfolgreich gelöscht!", "success");
+            }
+            else
+            {
+                ShowAlert($"Fehler beim Löschen: {response.StatusCode}", "error");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowAlert($"Fehler beim Löschen: {ex.Message}", "error");
+        }
+    }
+
+    private void ShowAlert(string message, string type)
+    {
+        alertMessage = message;
+        alertType = type;
+        showAlert = true;
+        StateHasChanged();
+        
+        // Auto-hide alert after 5 seconds
+        _ = Task.Delay(5000).ContinueWith(_ => 
+        {
+            showAlert = false;
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void HideAlert()
+    {
+        showAlert = false;
+    }
+}

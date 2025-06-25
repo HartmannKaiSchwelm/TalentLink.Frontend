@@ -1,0 +1,90 @@
+﻿@using TalentLink.Frontend.Models
+@inject HttpClient Httpclient
+
+<div class="how-it-works-section tips-bg">
+    <div class="text-center">
+        <h3>Wie es funktioniert</h3>
+    </div>
+    <div class="howitworks-row">
+        <div class="howitworks-col">
+            <h4 class="text-center">Schüler</h4>
+            @if (guideCards != null && guideCards.Any(g => g.Type == "Schüler"))
+            {
+                var schuelerCards = guideCards.Where(r => r.Type == "Schüler").OrderBy(c => c.OrderPosition).ToList();
+                for (int i = 0; i < schuelerCards.Count; i++)
+                {
+                    var card = schuelerCards[i];
+                    <div class="card h-100 shadow-sm mb-4">
+                        <div class="card-body">
+                            <p class="card-text">@card.Content</p>
+                        </div>
+                    </div>
+                    if (i < schuelerCards.Count - 1)
+                    {
+                        <div class="text-center">
+                            <h1><i class="bi bi-arrow-down-circle-fill"></i></h1>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="text-center">
+                    <p>Laden...</p>
+                </div>
+            }
+        </div>
+        <div class="howitworks-col">
+            <h4 class="text-center">Auftraggeber</h4>
+            @if (guideCards != null && guideCards.Any(g => g.Type == "Auftraggeber"))
+            {
+                var agCards = guideCards.Where(r => r.Type == "Auftraggeber").OrderBy(c => c.OrderPosition).ToList();
+                for (int i = 0; i < agCards.Count; i++)
+                {
+                    var card = agCards[i];
+                    <div class="card h-100 shadow-sm mb-4">
+                        <div class="card-body">
+                            <p class="card-text">@card.Content</p>
+                        </div>
+                    </div>
+                    if (i < agCards.Count - 1)
+                    {
+                        <div class="text-center">
+                            <h1><i class="bi bi-arrow-down-circle-fill"></i></h1>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="text-center">
+                    <p>Laden...</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<GuideCard> guideCards = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await Httpclient.GetAsync("https://localhost:7024/api/GuideCards");
+            if (response.IsSuccessStatusCode)
+            {
+                var fetchedCards = await response.Content.ReadFromJsonAsync<List<GuideCard>>();
+                if (fetchedCards != null)
+                {
+                    guideCards = fetchedCards;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching guide cards: {ex.Message}");
+        }
+    }
+}
