@@ -51,10 +51,7 @@ else
     private AdminDashboardDto? userData;
     private string? error;
     private readonly ApiConfig _apiConfig;
-    public AdminDashboardPage(ApiConfig apiConfig)
-    {
-        _apiConfig = apiConfig;
-    }
+   
     protected override async Task OnInitializedAsync()
     {
         // Warten, bis Auth geladen ist (egal wie lange es dauert)

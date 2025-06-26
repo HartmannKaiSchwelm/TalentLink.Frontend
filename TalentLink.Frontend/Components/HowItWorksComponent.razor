@@ -72,7 +72,7 @@
     {
         try
         {
-            var response = await Httpclient.GetAsync("https://localhost:7024/api/GuideCards");
+            var response = await Httpclient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/GuideCards");
             if (response.IsSuccessStatusCode)
             {
                 var fetchedCards = await response.Content.ReadFromJsonAsync<List<GuideCard>>();

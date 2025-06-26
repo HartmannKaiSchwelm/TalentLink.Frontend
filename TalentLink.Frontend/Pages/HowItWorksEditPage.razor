@@ -72,7 +72,7 @@
                         
                         <div class="mb-3">
                             <label for="type" class="form-label">Typ *</label>
-                            <InputText id="type" class="form-control" @bind-Value="updateDto.Type" placeholder="z.B. Schritt 1, Für Studenten, etc." />
+                            <InputText id="type" class="form-control" @bind-Value="updateDto.Type" placeholder="Ausschließlich Schüler oder Arbeitgeber auswählen" />
                             <ValidationMessage For="@(() => updateDto.Type)" class="text-danger" />
                         </div>
                         
@@ -109,7 +109,7 @@
                         
                         <div class="mb-3">
                             <label for="type" class="form-label">Typ *</label>
-                            <InputText id="type" class="form-control" @bind-Value="createDto.Type" placeholder="z.B. Schritt 1, Für Studenten, etc." />
+                            <InputText id="type" class="form-control" @bind-Value="createDto.Type" placeholder="ausschließlich Schüler oder Auftraggeber verwenden!" />
                             <ValidationMessage For="@(() => createDto.Type)" class="text-danger" />
                         </div>
                         
@@ -178,7 +178,7 @@ else{
     {
         try
         {
-            var response = await Httpclient.GetAsync("https://localhost:7024/api/GuideCards");
+            var response = await Httpclient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/GuideCards");
             if (response.IsSuccessStatusCode)
             {
                 var fetchedCards = await response.Content.ReadFromJsonAsync<List<GuideCard>>();
@@ -234,11 +234,11 @@ else{
             
             if (isEditMode)
             {
-                response = await Httpclient.PutAsJsonAsync($"https://localhost:7024/api/GuideCards/{editingCardId}", updateDto);
+                response = await Httpclient.PutAsJsonAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/GuideCards/{editingCardId}", updateDto);
             }
             else
             {
-                response = await Httpclient.PostAsJsonAsync("https://localhost:7024/api/GuideCards", createDto);
+                response = await Httpclient.PostAsJsonAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/GuideCards", createDto);
             }
 
             if (response.IsSuccessStatusCode)
@@ -269,7 +269,7 @@ else{
 
         try
         {
-            var response = await Httpclient.DeleteAsync($"https://localhost:7024/api/GuideCards/{cardId}");
+            var response = await Httpclient.DeleteAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/GuideCards/{cardId}");
             if (response.IsSuccessStatusCode)
             {
                 await LoadGuideCards();

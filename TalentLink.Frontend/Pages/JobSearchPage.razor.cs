@@ -34,7 +34,7 @@ namespace TalentLink.Frontend.Pages
             {
                 isLoading = true;
                 errorMessage = string.Empty;
-                var response = await HttpClient.GetAsync("https://localhost:7024/api/Categories");
+                var response = await HttpClient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/Categories");
                 if (response.IsSuccessStatusCode)
                 {
                     categories = await response.Content.ReadFromJsonAsync<List<JobCategory>>() ?? new List<JobCategory>();
@@ -66,7 +66,7 @@ namespace TalentLink.Frontend.Pages
             {
                 isLoading = true;
                 errorMessage = string.Empty;
-                var response = await HttpClient.GetAsync("https://localhost:7024/api/Job");
+                var response = await HttpClient.GetAsync("https://talentlink-9aef45cf7016.herokuapp.com/api/Job");
                 if (response.IsSuccessStatusCode)
                 {
                     var allJobs = await response.Content.ReadFromJsonAsync<List<JobListItemDto>>() ?? new List<JobListItemDto>();
@@ -110,8 +110,8 @@ namespace TalentLink.Frontend.Pages
                 isLoading = true;
                 errorMessage = string.Empty;
                 var url = string.IsNullOrEmpty(catUID)
-                    ? "https://localhost:7024/api/Job"
-                    : $"https://localhost:7024/api/Job?categoryId={catUID}";
+                    ? "https://talentlink-9aef45cf7016.herokuapp.com/api/Job"
+                    : $"https://talentlink-9aef45cf7016.herokuapp.com/api/Job?categoryId={catUID}";
                 var response = await HttpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
@@ -157,7 +157,7 @@ namespace TalentLink.Frontend.Pages
         }
         public async Task<(double lat, double lng)?> GetCoordinatesAsync(string ort)
         {
-            var response = await HttpClient.GetAsync($"https://localhost:7024/api/job/geocode?query={Uri.EscapeDataString(ort)}");
+            var response = await HttpClient.GetAsync($"https://talentlink-9aef45cf7016.herokuapp.com/api/job/geocode?query={Uri.EscapeDataString(ort)}");
             if (!response.IsSuccessStatusCode) return null;
             var coords = await response.Content.ReadFromJsonAsync<GeoResult>();
             return (coords.Lat, coords.Lng);
@@ -171,7 +171,7 @@ namespace TalentLink.Frontend.Pages
                 return; 
             }
             var (lat, lng) = coords.Value;
-            var url = $"https://localhost:7024/api/job/search?latitude={lat.ToString(CultureInfo.InvariantCulture)}&longitude={lng.ToString(CultureInfo.InvariantCulture)}&radiusKm={searchRadius}";
+            var url = $"https://talentlink-9aef45cf7016.herokuapp.com/api/job/search?latitude={lat.ToString(CultureInfo.InvariantCulture)}&longitude={lng.ToString(CultureInfo.InvariantCulture)}&radiusKm={searchRadius}";
             jobs = await HttpClient.GetFromJsonAsync<List<JobListItemDto>>(url) ?? new();
         }
     
