@@ -52,7 +52,10 @@ else
                         <li class="nav-item"><a href="/createjob" @onclick="@(() => NavigateAndClose("/createjob"))">Job anbieten</a></li>
                     }
                     <li class="nav-item"><a href="/tips" @onclick="@(() => NavigateAndClose("/tips"))">Tips und Tricks</a></li>
-                    <li class="nav-item"><a href="/profile" @onclick="@(() => NavigateAndClose("/profile"))">Profil</a></li>
+                    @if (AuthService.Role == "Senior" || AuthService.Role == "Student")
+                    {
+                        <li class="nav-item"><a href="/profile" @onclick="@(() => NavigateAndClose("/profile"))">Profil</a></li>
+                    }
                     @if (AuthService.Role == "Admin")
                     {
                         <li class="nav-item"><a href="/admindashboard" @onclick="@(() => NavigateAndClose("/admindashboard"))">Dashboard</a></li>

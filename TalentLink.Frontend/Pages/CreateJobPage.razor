@@ -5,6 +5,17 @@
 @inject NavigationManager Navi
 @inject IJSRuntime JS
 
+@if ( AuthService.Role != "Senior" && AuthService.Role != "Admin" )
+{
+    <div class="alert alert-danger text-center mt-5">
+        <strong>Fehler:</strong> Sie haben nicht die erforderlichen Berechtigungen, um diese Seite zu besuchen.
+    </div>
+}
+else
+{
+    <h1 class="text-center mt-4">Job erstellen</h1>
+}
+@if (AuthService.Role == "Senior" || AuthService.Role == "Admin"){
 <div class="container d-flex justify-content-center align-items-center content" style="min-height: 80vh;">
     <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
         <h4 class="mb-4 text-center">Job anlegen</h4>
@@ -53,7 +64,7 @@
         
     </div>
 </div>
-
+}
 @code {
     // Captcha-Steuerung wird in der .cs-Datei implementiert
 }

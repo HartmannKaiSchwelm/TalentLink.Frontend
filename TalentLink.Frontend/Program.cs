@@ -26,6 +26,7 @@ namespace TalentLink.Frontend
 
             // ApiConfig laden
             using var http = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
+            using var response = await http.GetAsync("appsettings.json");
             var configJson = await http.GetStringAsync("appsettings.json");
             var config = JsonSerializer.Deserialize<ApiConfig>(configJson);
             builder.Services.AddSingleton(config ?? new ApiConfig());
