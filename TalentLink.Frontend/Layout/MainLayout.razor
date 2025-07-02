@@ -1,21 +1,38 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 @using TalentLink.Frontend.Components
 @inject TalentLink.Frontend.Services.AuthenticationService AuthService
-<div class="page">
-   
-
+<div class="page @(sidebarOpen ? "sidebar-open" : "")">
     <main>
        <HeaderComponent/>
-       <div class="flex">
+       <div class="flex @(sidebarOpen ? "sidebar-open" : "")">
         @if(AuthService.Role == "Admin")
         {
-            <SidebarComponent/>
-
+            <button class="sidebar-toggle" @onclick="ToggleSidebar" aria-label="Toggle sidebar">
+                <span class="bi bi-list"></span>
+            </button>
+            <div class="sidebar-overlay @(sidebarOpen ? "show" : "")" @onclick="CloseSidebar"></div>
+            <div class="sidebar @(sidebarOpen ? "open" : "")">
+                <SidebarComponent/>
+            </div>
         }
         <article class="content px-4">
             @Body
-            </article>
+        </article>
         </div>
         <FooterComponent/>
     </main>
 </div>
+
+@code {
+    private bool sidebarOpen = false;
+
+    private void ToggleSidebar()
+    {
+        sidebarOpen = !sidebarOpen;
+    }
+
+    private void CloseSidebar()
+    {
+        sidebarOpen = false;
+    }
+}
