@@ -15,6 +15,13 @@ namespace TalentLink.Frontend.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            // Check if user is authenticated and has permission to create jobs
+            if (!AuthService.IsAuthenticated || (AuthService.Role != "Senior" && AuthService.Role != "Admin"))
+            {
+                Navi.NavigateTo("/login");
+                return;
+            }
+            
             await LoadCategoriesAsync();
         }
         private async Task LoadCategoriesAsync()
