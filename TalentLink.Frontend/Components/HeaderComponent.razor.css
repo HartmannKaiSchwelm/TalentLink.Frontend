@@ -74,34 +74,35 @@ nav {
     
     .menu-toggle {
         display: block;
-        position: static;
-        z-index: 1001;
+        position: fixed;
+        z-index: 10002;
+        right: 1rem;
+        top: 1rem;
     }
     
     .nav-links {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 300px;
-        height: 100vh;
-        background: white;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        padding: 4rem 2rem 2rem 2rem;
-        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
-        z-index: 1000;
-        gap: 1.5rem;
-        /* WICHTIG: Menü ist standardmäßig versteckt */
-        visibility: hidden;
-        opacity: 0;
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 300px !important;
+        height: 100vh !important;
+        background: white !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        padding: 4rem 2rem 2rem 2rem !important;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.3s ease !important;
+        z-index: 10003 !important;
+        gap: 1.5rem !important;
+        display: flex !important;
+        transform: translateX(100%) !important;
+        pointer-events: none !important;
     }
     
     .nav-links.open {
-        right: 0;
-        visibility: visible;
-        opacity: 1;
+        transform: translateX(0) !important;
+        pointer-events: auto !important;
     }
     
     .nav-item {
@@ -120,6 +121,8 @@ nav {
         width: 100%;
         margin: 0.5rem 0;
     }
+    
+
 }
 
 /* Tablet */
@@ -133,12 +136,17 @@ nav {
     }
 }
 
-/* Overlay für Mobile Menu - Removed for bright appearance */
+/* Overlay für Mobile Menu */
 @media (max-width: 768px) {
-    .container {
-        position: relative;
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100vw - 300px);
+        height: 100vh;
+        background: transparent;
+        z-index: 10001;
+        pointer-events: auto;
     }
-    
-    /* Overlay removed to make menu appear as bright as the rest of the page */
 }
 

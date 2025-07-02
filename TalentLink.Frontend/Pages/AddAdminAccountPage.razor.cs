@@ -1,15 +1,14 @@
-﻿using System.Net.Http;
+using System.Net.Http;
 using System.Net.Http.Json;
 using TalentLink.Frontend.Models;
 using TalentLink.Frontend.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace TalentLink.Frontend.Pages
 {
     public partial class AddAdminAccountPage
     {
         private UserRegisterDto user = new UserRegisterDto();
-        private string message;
-        private string errorMessage;
 
         private async Task Register()
         {
@@ -17,18 +16,9 @@ namespace TalentLink.Frontend.Pages
 
             if (response.IsSuccessStatusCode)
             {
-                message = "User created successfully.";
                 user = new UserRegisterDto();
                 user.Role = 3; // Set role to Admin
             }
-            else
-            {
-                errorMessage = "Error creating user.";
-            }
-            StateHasChanged();
-            await Task.Delay(2000);
-            message = null;
-            errorMessage = null;
             StateHasChanged();
         }
     }

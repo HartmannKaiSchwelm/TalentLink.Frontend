@@ -1,36 +1,6 @@
-﻿@using TalentLink.Frontend.Services
+@using TalentLink.Frontend.Services
 @inject AuthenticationService AuthService
 @inject NavigationManager Navi
-
-@code {
-    private bool navOpen = false;
-    private void ToggleNav() => navOpen = !navOpen;
-    private void CloseNav() => navOpen = false;
-    
-    private void NavigateAndClose(string url)
-    {
-        CloseNav();
-        Navi.NavigateTo(url);
-    }
-    
-    private async Task LogoutAndClose()
-    {
-        CloseNav();
-        await LogoutAsync();
-    }
-    
-    private void LoginAndClose()
-    {
-        CloseNav();
-        NavToLogin();
-    }
-    
-    private void RegisterAndClose()
-    {
-        CloseNav();
-        NavToRegister();
-    }
-}
 
 @if (!AuthService.IsAuthLoaded)
 {
@@ -38,27 +8,26 @@
 }
 else
 {
-    <div class="container" @onclick="CloseNav">
-        <nav @onclick:stopPropagation>
-            <div class="nav-content">
-                <button class="menu-toggle" @onclick="ToggleNav" aria-label="Menü öffnen/schließen">
-                    <span class="bi bi-list"></span>
-                </button>
-                <ul class="nav-links @(navOpen ? "open" : null)" @onclick:stopPropagation>
-                    <li class="nav-item"><a href="/" @onclick="@(() => NavigateAndClose("/"))">Startseite</a></li>
-                    <li class="nav-item"><a href="/jobsearch" @onclick="@(() => NavigateAndClose("/jobsearch"))">Jobs finden</a></li>
+    <nav>
+        <div class="nav-content">
+            <button class="menu-toggle" @onclick="ToggleNav" aria-label="Menü öffnen/schließen">
+                <span class="bi bi-list"></span>
+            </button>
+            <ul class="nav-links @(navOpen ? "open" : null)" @onclick:stopPropagation="true">
+                    <li class="nav-item"><a href="/" @onclick="@(() => NavigateAndClose("/"))" @onclick:preventDefault="true">Startseite</a></li>
+                    <li class="nav-item"><a href="/jobsearch" @onclick="@(() => NavigateAndClose("/jobsearch"))" @onclick:preventDefault="true">Jobs finden</a></li>
                     @if (AuthService.Role == "Senior" || AuthService.Role == "Admin")
                     {
-                        <li class="nav-item"><a href="/createjob" @onclick="@(() => NavigateAndClose("/createjob"))">Job anbieten</a></li>
+                        <li class="nav-item"><a href="/createjob" @onclick="@(() => NavigateAndClose("/createjob"))" @onclick:preventDefault="true">Job anbieten</a></li>
                     }
-                    <li class="nav-item"><a href="/tips" @onclick="@(() => NavigateAndClose("/tips"))">Tips und Tricks</a></li>
+                    <li class="nav-item"><a href="/tips" @onclick="@(() => NavigateAndClose("/tips"))" @onclick:preventDefault="true">Tips und Tricks</a></li>
                     @if (AuthService.Role == "Senior" || AuthService.Role == "Student")
                     {
-                        <li class="nav-item"><a href="/profile" @onclick="@(() => NavigateAndClose("/profile"))">Profil</a></li>
+                        <li class="nav-item"><a href="/profile" @onclick="@(() => NavigateAndClose("/profile"))" @onclick:preventDefault="true">Profil</a></li>
                     }
                     @if (AuthService.Role == "Admin")
                     {
-                        <li class="nav-item"><a href="/admindashboard" @onclick="@(() => NavigateAndClose("/admindashboard"))">Dashboard</a></li>
+                        <li class="nav-item"><a href="/admindashboard" @onclick="@(() => NavigateAndClose("/admindashboard"))" @onclick:preventDefault="true">Dashboard</a></li>
                     }
                     @if (!AuthService.IsAuthenticated)
                     {
@@ -69,10 +38,17 @@ else
                     {
                         <li><button class="btn btn-outline-primary" @onclick="LogoutAndClose">Logout</button></li>
                     }
-                </ul>
-            </div>
-        </nav>
-    </div>
+            </ul>
+        </div>
+    </nav>
+    @if (navOpen)
+    {
+        <div class="nav-overlay" @onclick="CloseNav"></div>
+    }
+}
+
+@code {
+    // All methods are now implemented in HeaderComponent.razor.cs
 }
 
 

@@ -421,6 +421,8 @@ nav {
     }
 }
 
+/* Commented out conflicting mobile nav styles - using component-specific CSS instead */
+/*
 @media (max-width: 700px) {
     .nav-content {
         flex-direction: row;
@@ -446,6 +448,7 @@ nav {
         display: block;
     }
 }
+*/
 
 /* Additional mobile improvements */
 @media (max-width: 480px) {

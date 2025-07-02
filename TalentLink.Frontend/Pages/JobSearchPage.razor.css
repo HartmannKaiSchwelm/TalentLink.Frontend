@@ -1,4 +1,4 @@
-﻿/* Mobile-First Approach - Funktioniert garantiert auf allen Geräten */
+/* Mobile-First Approach - Funktioniert garantiert auf allen Geräten */
 body {
     background-color: #f8f9fa;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -18,7 +18,7 @@ body {
     visibility: visible !important;
     opacity: 1 !important;
     position: relative !important;
-    z-index: 1000 !important;
+    z-index: 1 !important;
 }
 
 /* Filter Row */

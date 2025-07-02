@@ -16,20 +16,19 @@ namespace TalentLink.Frontend
             builder.RootComponents.Add<HeadOutlet>("head::after");
             builder.Services.AddScoped<AuthenticationService>();
             builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://talentlink-9aef45cf7016.herokuapp.com/") });
-            // Enum in string
-            //builder.Services.AddScoped(sp => new HttpClient
-            //{
-            //    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress),
-            //    DefaultRequestHeaders = { /* ... */ }
-            //});
-
+            
             // ApiConfig laden
             using var http = new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) };
-            using var response = await http.GetAsync("appsettings.json");
             var configJson = await http.GetStringAsync("appsettings.json");
             var config = JsonSerializer.Deserialize<ApiConfig>(configJson);
             builder.Services.AddSingleton(config ?? new ApiConfig());
+            
+            // HttpClient mit ApiConfig konfigurieren
+            builder.Services.AddScoped(sp => 
+            {
+                var apiConfig = sp.GetRequiredService<ApiConfig>();
+                return new HttpClient { BaseAddress = new Uri(apiConfig.ApiBaseUrl) };
+            });
 
             var host = builder.Build();
             var authService = host.Services.GetRequiredService<AuthenticationService>();
