@@ -12,7 +12,6 @@ namespace TalentLink.Frontend.Pages
         private Guid? selectedCategoryId;
         private string? successMessage;
         private string? errorMessage;
-        private int MinimumAge { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -23,7 +22,7 @@ namespace TalentLink.Frontend.Pages
             try
             {
                 // Debug: Zeige die rohe Antwort der Categories API
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://talentlink-9aef45cf7016.herokuapp.com/api/categories");
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7024/api/categories");
                 if (!string.IsNullOrEmpty(AuthService.Token))
                 {
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthService.Token);
@@ -94,10 +93,6 @@ namespace TalentLink.Frontend.Pages
                     return;
                 }
                 newJob.CreatedById = userId.Value; // Verwende userId statt AuthService.UserId
-                Console.WriteLine($"AuthService.ZipCode: '{AuthService.ZipCode}'");
-                newJob.ZipCode = AuthService.ZipCode;
-                newJob.City = AuthService.City;
-              
                 Console.WriteLine($"Set CreatedById to: {newJob.CreatedById}");
             }
             catch (Exception ex)
@@ -110,7 +105,7 @@ namespace TalentLink.Frontend.Pages
             try
             {
                 Console.WriteLine("=== Sending CreateJob Request ===");
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://talentlink-9aef45cf7016.herokuapp.com/api/Job")
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/Job")
                 {
                     Content = JsonContent.Create(newJob)
                 };
@@ -131,15 +126,14 @@ namespace TalentLink.Frontend.Pages
                         // Stripe-Session anfordern - mit besserer Fehlerbehandlung
                         try
                         {
-                            var stripeRequest = new HttpRequestMessage(HttpMethod.Post, "https://talentlink-9aef45cf7016.herokuapp.com/api/payment/create-session")
+                            var stripeRequest = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7024/api/payment/create-session")
                             {
                                 Content = JsonContent.Create(new
                                 {
                                     jobId = createdJob.Id,
-                                    // amount wird im Backend berechnet, daher entfernen
-                                    isBoost = newJob.IsBoosted, // <--- IsBoosted an das Backend übergeben
+                                    amount = 499,
                                     successUrl = $"{Navi.BaseUri}paymentsuccess",
-                                    cancelUrl = $"{Navi.BaseUri}paymentcancel"
+                                    cancelUrl = $"{Navi.BaseUri}payment/cancel"
                                 })
                             };
 
@@ -164,7 +158,7 @@ namespace TalentLink.Frontend.Pages
                                 try
                                 {
                                     var stripeSession = await stripeResponse.Content.ReadFromJsonAsync<StripeSessionResponse>();
-                                    if (stripeSession != null && !string.IsNullOrEmpty(stripeSession.Url) && stripeSession.Url.StartsWith("http"))
+                                    if (stripeSession != null && !string.IsNullOrEmpty(stripeSession.Url))
                                     {
                                         await Task.Delay(500);
                                         try {
@@ -179,9 +173,7 @@ namespace TalentLink.Frontend.Pages
                                     }
                                     else
                                     {
-                                        errorMessage = "Stripe-Session URL ist leer oder ungültig. Bitte versuchen Sie es später erneut oder kontaktieren Sie den Support.";
-                                        Console.WriteLine($"Stripe-Session URL ungültig: {stripeSession?.Url}");
-                                        StateHasChanged();
+                                        errorMessage = "Stripe-Session URL ist leer oder ungültig.";
                                     }
                                 }
                                 catch (Exception ex)

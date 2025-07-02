@@ -1,4 +1,4 @@
-﻿* {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -263,6 +263,9 @@ footer {
 
     .hero, .content {
         padding: 2rem 1rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .nav-content {
@@ -273,6 +276,14 @@ footer {
         display: none;
     }
 
+    .feature {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 0 1.5rem 0;
+        padding: 1rem;
+        box-sizing: border-box;
+    }
+
     .feature:nth-child(even) {
         margin-left: 0;
         text-align: left;
@@ -280,6 +291,38 @@ footer {
 
     .cta-buttons {
         flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero, .content {
+        padding: 1.5rem 0.75rem;
+    }
+    
+    .feature {
+        padding: 0.75rem;
+        margin: 0 0 1rem 0;
+    }
+    
+    .feature h3 {
+        font-size: 1.2rem;
+    }
+    
+    .feature p {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
     }
 }
 

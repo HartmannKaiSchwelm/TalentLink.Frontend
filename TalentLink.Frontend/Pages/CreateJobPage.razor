@@ -5,27 +5,13 @@
 @inject NavigationManager Navi
 @inject IJSRuntime JS
 
-@if ( AuthService.Role != "Senior" && AuthService.Role != "Admin" )
-{
-    <div class="alert alert-danger text-center mt-5">
-        <strong>Fehler:</strong> Sie haben nicht die erforderlichen Berechtigungen, um diese Seite zu besuchen.
-    </div>
-}
-else
-{
-    <h1 class="text-center mt-4">Job erstellen</h1>
-}
-@if (AuthService.Role == "Senior" || AuthService.Role == "Admin"){
 <div class="container d-flex justify-content-center align-items-center content" style="min-height: 80vh;">
     <div class="card shadow-sm p-4" style="max-width: 350px; width: 100%;">
         <h4 class="mb-4 text-center">Job anlegen</h4>
         <EditForm Model="@newJob" OnValidSubmit="CreateJob">
             <InputText @bind-Value="newJob.Title" class="form-control mb-2" placeholder="Job Title" />
             <InputTextArea @bind-Value="newJob.Description" class="form-control mb-2" placeholder="Beschreibung" />
-            <label for="price">Stundenlohn</label>
-            <InputNumber id="price" @bind-Value="newJob.PricePerHour" class="form-control mb-2" placeholder="Preis pro Stunde" />
-            <label for="alter">Alter</label>            
-            <InputNumber id="alter" @bind-Value="newJob.MinimumAge" class="form-control mb-2" placeholder="Mindestalter"/>
+            <InputNumber @bind-Value="newJob.PricePerHour" class="form-control mb-2" placeholder="Preis pro Stunde" />
             <div class="mb-2">
                 <label>Kategorie</label>
                 <InputSelect @bind-Value="selectedCategoryId" class="form-control">
@@ -38,7 +24,7 @@ else
             </div>
             <div class="form-check mb-3">
                 <InputCheckbox @bind-Value="newJob.IsBoosted" class="form-check-input" id="boosted" />
-                <label class="form-check-label">Job hervorheben</label>
+                <label class="form-check-label">Job hervorheben (Boosted)</label>
             </div>
             
             <div class="mb-3">
@@ -64,7 +50,7 @@ else
         
     </div>
 </div>
-}
+
 @code {
     // Captcha-Steuerung wird in der .cs-Datei implementiert
 }

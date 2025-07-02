@@ -133,22 +133,12 @@ nav {
     }
 }
 
-/* Overlay für Mobile Menu */
+/* Overlay für Mobile Menu - Removed for bright appearance */
 @media (max-width: 768px) {
     .container {
         position: relative;
     }
     
-    .nav-links.open::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        pointer-events: none; /* WICHTIG: Overlay soll keine Klicks blockieren */
-    }
+    /* Overlay removed to make menu appear as bright as the rest of the page */
 }
 
